@@ -135,14 +135,14 @@ export default function App() {
         return Math.abs(dx) > 50;
       },
       onPanResponderMove: (event, gestureState) => {
-      // 웹뷰로 이벤트를 전달해 스와이프 동작을 실행합니다.
+        // 웹뷰로 이벤트를 전달해 스와이프 동작을 실행합니다.
 
         myWebWiew.current?.injectJavaScript(
           `window.scrollTo(window.scrollX - ${gestureState.dx}, window.scrollY);`,
         );
       },
       onPanResponderRelease: (event, gestureState) => {
-      // 제스처 완료 시 필요한 작업을 수행합니다.
+        // 제스처 완료 시 필요한 작업을 수행합니다.
         const { dx } = gestureState;
 
         if (dx > 100) {
@@ -226,7 +226,7 @@ window.addEventListener('message', function(event) {
 `;
 
   const onMessageReceived = async event => {
-  //   console.log(event.nativeEvent.data)
+    //   console.log(event.nativeEvent.data)
     if (event.nativeEvent.data === 'signout') {
       await AsyncStorage.removeItem('token');
       setwebloading(true);
@@ -242,7 +242,7 @@ window.addEventListener('message', function(event) {
     <SafeAreaView
       overScrollMode="never"
       style={{ flex: 1, backgroundColor: 'white' }}
-    // {...panResponder.panHandlers }
+      // {...panResponder.panHandlers }
     >
       {webloading ? (
         <View style={{ flex: 1, backgroundColor: 'white' }}>
@@ -301,7 +301,7 @@ window.addEventListener('message', function(event) {
                       </View>
                     ) : (
                       <Image
-                      style={{ width: w * 0.7, height: w * 1.6 }}
+                          style={{ width: w * 0.7, height: w * 1.6 }}
                       source={item.uri}
                       resizeMode="contain"
                     />
@@ -357,9 +357,9 @@ window.addEventListener('message', function(event) {
           )}
         </View>
       ) : (
-        <View overScrollMode="never" style={{ flex: 1 }}>
+          <View overScrollMode="never" style={{ flex: 1 }}>
           <WebView
-            style={{ flex: 1 }}
+              style={{ flex: 1 }}
             ref={myWebWiew}
               originWhitelist={['*']}
               source={{ uri: sourceUrl }}
