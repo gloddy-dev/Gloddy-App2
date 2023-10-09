@@ -372,6 +372,7 @@ window.addEventListener('message', function(event) {
                 setLoading(false);
               }
             }}
+            pullToRefreshEnabled
             // sharedCookiesEnabled={true}
             // scalesPageToFit={false}
             thirdPartyCookiesEnabled={true}
