@@ -256,6 +256,148 @@ const onMessageReceived =async event => {
         {
           useNativeDriver: false,
         }
+      {webloading ? (
+        <View style={{flex: 1, backgroundColor: 'white'}}>
+          <SwiperFlatList
+            initialScrollIndex={0}
+            paginationDefaultColor="gray"
+            paginationActiveColor="rgb(75,133,247)"
+            showPagination={false}
+            pagingEnabled={true}
+            paginationStyle={{bottom: 100}}
+            onChangeIndex={e => setshowindex(e.index)}
+            horizontal={true}
+            onScroll={Animated.event(
+              [{nativeEvent: {contentOffset: {x: scrollX}}}],
+              {
+                useNativeDriver: false,
+              },
+            )}
+            data={data}
+            renderItem={({item, index}) => {
+              return (
+                <View
+                  style={{
+                    width: w,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  {index === 0 ? (
+                    <View style={{alignItems: 'center'}}>
+                      {lang === 'ko' ? <Bubble1SVG /> : <Bubble1enSVG />}
+                      <Image
+                        style={{
+                          width: w * 0.8,
+                          height: w * 0.8,
+                          marginVertical: 20,
+                        }}
+                        source={item.uri}
+                        resizeMode="contain"
+                      />
+                      {lang === 'ko' ? <Text1SVG /> : <Text1enSVG />}
+                    </View>
+                  ) : index === 1 ? (
+                    <View style={{alignItems: 'center'}}>
+                      {lang === 'ko' ? <Bubble2SVG /> : <Bubble2enSVG />}
+                      <Image
+                        style={{
+                          width: w * 0.8,
+                          height: w * 0.8,
+                          marginBottom: 20,
+                          marginTop: 10,
+                        }}
+                        source={item.uri}
+                        resizeMode="contain"
+                      />
+                      {lang === 'ko' ? <Text2SVG /> : <Text2enSVG />}
+                    </View>
+                  ) : (
+                    <Image
+                      style={{width: w * 0.7, height: w * 1.6}}
+                      source={item.uri}
+                      resizeMode="contain"
+                    />
+                  )}
+
+                  {index === 2 && (
+                    <TouchableOpacity
+                      onPress={() => {
+                        handlestart();
+                      }}
+                      style={{
+                        width: w * 0.9,
+                        height: 60,
+                        borderRadius: 10,
+                        backgroundColor: 'rgb(75,133,247)',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}>
+                      <Text
+                        style={{
+                          color: 'white',
+                          fontSize: 20,
+                          fontWeight: 'bold',
+                        }}>
+                        {lang === 'ko' ? '시작하기' : 'START'}
+                      </Text>
+                    </TouchableOpacity>
+                  )}
+                </View>
+              );
+            }}
+            keyExtractor={(item, index) => String(index)}
+          />
+          {showindex !== 2 && (
+            <ExpandingDot
+              data={['1', '2']}
+              expandingDotWidth={30}
+              scrollX={scrollX}
+              activeDotColor="rgb(75,133,247)"
+              inActiveDotColor="gray"
+              inActiveDotOpacity={0.6}
+              dotStyle={{
+                width: 10,
+                height: 10,
+                backgroundColor: '#347af0',
+                borderRadius: 5,
+                marginHorizontal: 5,
+              }}
+              containerStyle={{
+                bottom: 30,
+              }}
+            />
+          )}
+        </View>
+      ) : (
+        <View overScrollMode="never" style={{flex: 1}}>
+          <WebView
+            style={{flex: 1}}
+            ref={myWebWiew}
+            originWhitelist={['*']}
+            source={{uri: sourceUrl}}
+            overScrollMode="never"
+            onLoadStart={() => setLoading(true)}
+            onLoadEnd={() => setLoading(false)}
+            onLoadProgress={({nativeEvent}) => {
+              if (nativeEvent.progress === 1) {
+                // 로딩이 완료되었을 때
+                setLoading(false);
+              }
+            }}
+            pullToRefreshEnabled
+            // sharedCookiesEnabled={true}
+            // scalesPageToFit={false}
+            thirdPartyCookiesEnabled={true}
+            //  mediaPlaybackRequiresUserAction={false}
+            androidHardwareAccelerationDisabled={true}
+            onShouldStartLoadWithRequest={event => {
+              return onShouldStartLoadWithRequest(event);
+            }}
+            onLoad={() => sendweb()}
+            //  injectedJavaScript={webViewInjectedJS}
+            onMessage={onMessageReceived}
+          />
+        </View>
       )}
           data={data}
           renderItem={({item,index})=>{
