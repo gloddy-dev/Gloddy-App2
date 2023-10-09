@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   ActivityIndicator,
   Animated,
@@ -15,11 +15,11 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { ExpandingDot } from 'react-native-animated-pagination-dots';
-import { PERMISSIONS, request } from 'react-native-permissions';
+import {ExpandingDot} from 'react-native-animated-pagination-dots';
+import {PERMISSIONS, request} from 'react-native-permissions';
 import SplashScreen from 'react-native-splash-screen';
-import { SwiperFlatList } from 'react-native-swiper-flatlist';
-import { WebView } from 'react-native-webview';
+import {SwiperFlatList} from 'react-native-swiper-flatlist';
+import {WebView} from 'react-native-webview';
 import * as RNLocalize from 'react-native-localize';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Bubble1SVG from './image/bubble1.svg';
@@ -42,7 +42,7 @@ export default function App() {
   const [webloading, setwebloading] = useState(true);
   const [showindex, setshowindex] = useState(true);
   const [data, setdata] = useState([
-    { no: 1, uri: require('./image/character_edit.png') },
+    {no: 1, uri: require('./image/character_edit.png')},
     {no: 2, uri: require('./image/character_edit2.png')},
     {no: 3, uri: require('./image/start.png')},
   ]);
@@ -97,7 +97,7 @@ export default function App() {
       clearTimeout(timer);
       BackHandler.exitApp();
     }
-  }, [exit, swexit]);
+  }, [swexit]);
   useEffect(() => {
     BackHandler.addEventListener('hardwareBackPress', backAction);
 
@@ -128,7 +128,7 @@ export default function App() {
   const panResponder = useRef(
     PanResponder.create({
       onMoveShouldSetPanResponder: (event, gestureState) => {
-        const { dx, dy } = gestureState;
+        const {dx, dy} = gestureState;
         // 여기서 원하는 조건을 넣어서 제스처를 인식할지 결정합니다.
         // 오른쪽으로 스와이프하는 제스처를 인식하기 위해 dx 값이 특정 임계값 이상인 경우를 판단합니다.
 
@@ -143,7 +143,7 @@ export default function App() {
       },
       onPanResponderRelease: (event, gestureState) => {
         // 제스처 완료 시 필요한 작업을 수행합니다.
-        const { dx } = gestureState;
+        const {dx} = gestureState;
 
         if (dx > 100) {
           myWebWiew?.current?.goBack();
@@ -241,28 +241,28 @@ window.addEventListener('message', function(event) {
   return (
     <SafeAreaView
       overScrollMode="never"
-      style={{ flex: 1, backgroundColor: 'white' }}
+      style={{flex: 1, backgroundColor: 'white'}}
       // {...panResponder.panHandlers }
     >
       {webloading ? (
-        <View style={{ flex: 1, backgroundColor: 'white' }}>
+        <View style={{flex: 1, backgroundColor: 'white'}}>
           <SwiperFlatList
             initialScrollIndex={0}
             paginationDefaultColor="gray"
             paginationActiveColor="rgb(75,133,247)"
             showPagination={false}
             pagingEnabled={true}
-            paginationStyle={{ bottom: 100 }}
+            paginationStyle={{bottom: 100}}
             onChangeIndex={e => setshowindex(e.index)}
             horizontal={true}
             onScroll={Animated.event(
-              [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+              [{nativeEvent: {contentOffset: {x: scrollX}}}],
               {
                 useNativeDriver: false,
               },
             )}
             data={data}
-            renderItem={({ item, index }) => {
+            renderItem={({item, index}) => {
               return (
                 <View
                   style={{
@@ -271,7 +271,7 @@ window.addEventListener('message', function(event) {
                     justifyContent: 'center',
                   }}>
                   {index === 0 ? (
-                    <View style={{ alignItems: 'center' }}>
+                    <View style={{alignItems: 'center'}}>
                       {lang === 'ko' ? <Bubble1SVG /> : <Bubble1enSVG />}
                       <Image
                         style={{
@@ -285,23 +285,23 @@ window.addEventListener('message', function(event) {
                       {lang === 'ko' ? <Text1SVG /> : <Text1enSVG />}
                     </View>
                   ) : index === 1 ? (
-                      <View style={{ alignItems: 'center' }}>
-                        {lang === 'ko' ? <Bubble2SVG /> : <Bubble2enSVG />}
-                        <Image
-                          style={{
-                            width: w * 0.8,
-                            height: w * 0.8,
-                            marginBottom: 20,
-                            marginTop: 10,
-                          }}
-                          source={item.uri}
-                          resizeMode="contain"
-                        />
-                        {lang === 'ko' ? <Text2SVG /> : <Text2enSVG />}
-                      </View>
-                    ) : (
+                    <View style={{alignItems: 'center'}}>
+                      {lang === 'ko' ? <Bubble2SVG /> : <Bubble2enSVG />}
                       <Image
-                          style={{ width: w * 0.7, height: w * 1.6 }}
+                        style={{
+                          width: w * 0.8,
+                          height: w * 0.8,
+                          marginBottom: 20,
+                          marginTop: 10,
+                        }}
+                        source={item.uri}
+                        resizeMode="contain"
+                      />
+                      {lang === 'ko' ? <Text2SVG /> : <Text2enSVG />}
+                    </View>
+                  ) : (
+                    <Image
+                      style={{width: w * 0.7, height: w * 1.6}}
                       source={item.uri}
                       resizeMode="contain"
                     />
@@ -357,32 +357,32 @@ window.addEventListener('message', function(event) {
           )}
         </View>
       ) : (
-          <View overScrollMode="never" style={{ flex: 1 }}>
+        <View overScrollMode="never" style={{flex: 1}}>
           <WebView
-              style={{ flex: 1 }}
+            style={{flex: 1}}
             ref={myWebWiew}
-              originWhitelist={['*']}
-              source={{ uri: sourceUrl }}
-              overScrollMode="never"
-              onLoadStart={() => setLoading(true)}
-              onLoadEnd={() => setLoading(false)}
-              onLoadProgress={({ nativeEvent }) => {
-                if (nativeEvent.progress === 1) {
-                  // 로딩이 완료되었을 때
-                  setLoading(false);
-                }
-              }}
-              // sharedCookiesEnabled={true}
-              // scalesPageToFit={false}
-              thirdPartyCookiesEnabled={true}
-              //  mediaPlaybackRequiresUserAction={false}
-              androidHardwareAccelerationDisabled={true}
-              onShouldStartLoadWithRequest={event => {
-                return onShouldStartLoadWithRequest(event);
-              }}
-              onLoad={() => sendweb()}
-              //  injectedJavaScript={webViewInjectedJS}
-              onMessage={onMessageReceived}
+            originWhitelist={['*']}
+            source={{uri: sourceUrl}}
+            overScrollMode="never"
+            onLoadStart={() => setLoading(true)}
+            onLoadEnd={() => setLoading(false)}
+            onLoadProgress={({nativeEvent}) => {
+              if (nativeEvent.progress === 1) {
+                // 로딩이 완료되었을 때
+                setLoading(false);
+              }
+            }}
+            // sharedCookiesEnabled={true}
+            // scalesPageToFit={false}
+            thirdPartyCookiesEnabled={true}
+            //  mediaPlaybackRequiresUserAction={false}
+            androidHardwareAccelerationDisabled={true}
+            onShouldStartLoadWithRequest={event => {
+              return onShouldStartLoadWithRequest(event);
+            }}
+            onLoad={() => sendweb()}
+            //  injectedJavaScript={webViewInjectedJS}
+            onMessage={onMessageReceived}
           />
         </View>
       )}
