@@ -34,18 +34,18 @@ import Text2enSVG from './image/text2en.svg';
 const w = Dimensions.get('window').width;
 const h = Dimensions.get('window').height;
 
+const IMAGEDATA = [
+  {no: 1, uri: require('./image/character_edit.png')},
+  {no: 2, uri: require('./image/character_edit2.png')},
+  {no: 3, uri: require('./image/start.png')},
+];
+
 export default function App() {
   const myWebWiew = useRef();
   const [lang, setlang] = useState(null);
   const scrollX = useRef(new Animated.Value(0)).current;
-  const [sourceUrl, setsourceUrl] = useState('https://gloddy.vercel.app/');
   const [webloading, setwebloading] = useState(true);
   const [showindex, setshowindex] = useState(true);
-  const [data, setdata] = useState([
-    {no: 1, uri: require('./image/character_edit.png')},
-    {no: 2, uri: require('./image/character_edit2.png')},
-    {no: 3, uri: require('./image/start.png')},
-  ]);
   const onShouldStartLoadWithRequest = event => {
     //console.log(event)
     if (
@@ -63,21 +63,7 @@ export default function App() {
     return true; // 다른 URL은 웹뷰 내에서 계속 로드됩니다
   };
 
-  const sendweb = () => {
-    try {
-      const lang = RNLocalize.getLocales()[0].languageCode;
-      const payload = {
-        type: 'RNLocalize',
-        Platform: Platform.OS,
-        data: lang,
-      };
-      myWebWiew.current.postMessage(JSON.stringify(payload));
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  //////////////////////Back button control
+  // Back button control
   const [exit, setexit] = useState(false);
   const [swexit, setswexit] = useState(0);
   const backAction = () => {
@@ -209,24 +195,7 @@ export default function App() {
     }
   };
 
-  ///////////////
-
-  const [cookies, setCookies] = useState('');
-
-  const handleCookieChange = newCookies => {
-    // 쿠키 값이 변경될 때마다 호출됩니다.
-    //console.log('New cookies:', newCookies);
-    //setCookies(newCookies);
-  };
-  const webViewInjectedJS = `
-window.addEventListener('message', function(event) {
-  alert(JSON.stringify(event.data));
-});
-  true;
-`;
-
   const onMessageReceived = async event => {
-    //   console.log(event.nativeEvent.data)
     if (event.nativeEvent.data === 'signout') {
       await AsyncStorage.removeItem('token');
       setwebloading(true);
@@ -241,9 +210,7 @@ window.addEventListener('message', function(event) {
   return (
     <SafeAreaView
       overScrollMode="never"
-      style={{flex: 1, backgroundColor: 'white'}}
-      // {...panResponder.panHandlers }
-    >
+      style={{flex: 1, backgroundColor: 'white'}}>
       {webloading ? (
         <View style={{flex: 1, backgroundColor: 'white'}}>
           <SwiperFlatList
@@ -261,7 +228,7 @@ window.addEventListener('message', function(event) {
                 useNativeDriver: false,
               },
             )}
-            data={data}
+            data={IMAGEDATA}
             renderItem={({item, index}) => {
               return (
                 <View
@@ -362,27 +329,21 @@ window.addEventListener('message', function(event) {
             style={{flex: 1}}
             ref={myWebWiew}
             originWhitelist={['*']}
-            source={{uri: sourceUrl}}
+            source={{uri: 'https://gloddy.vercel.app'}}
             overScrollMode="never"
             onLoadStart={() => setLoading(true)}
             onLoadEnd={() => setLoading(false)}
             onLoadProgress={({nativeEvent}) => {
               if (nativeEvent.progress === 1) {
-                // 로딩이 완료되었을 때
                 setLoading(false);
               }
             }}
             pullToRefreshEnabled
-            // sharedCookiesEnabled={true}
-            // scalesPageToFit={false}
             thirdPartyCookiesEnabled={true}
-            //  mediaPlaybackRequiresUserAction={false}
             androidHardwareAccelerationDisabled={true}
             onShouldStartLoadWithRequest={event => {
               return onShouldStartLoadWithRequest(event);
             }}
-            onLoad={() => sendweb()}
-            //  injectedJavaScript={webViewInjectedJS}
             onMessage={onMessageReceived}
           />
         </View>
