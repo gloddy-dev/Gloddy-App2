@@ -7,7 +7,9 @@
     "ios": "react-native run-ios",
     "lint": "eslint .",
     "start": "react-native start",
-    "test": "jest"
+    "test": "jest",
+    "format": "prettier --write --ignore-path .gitignore .",
+    "lint:fix": "eslint '**/*.{js,jsx,ts,tsx}' --fix"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.19.3",
