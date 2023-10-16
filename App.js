@@ -39,7 +39,9 @@ export default function App() {
   const myWebWiew = useRef();
   const [lang, setlang] = useState(null);
   const scrollX = useRef(new Animated.Value(0)).current;
-  const [sourceUrl, setsourceUrl] = useState('https://gloddy.vercel.app');
+  const [sourceUrl, setsourceUrl] = useState(
+    'https://gloddy.vercel.app/join?step=3',
+  );
   const [webloading, setwebloading] = useState(true);
   const [showindex, setshowindex] = useState(true);
   const [data, setdata] = useState([
@@ -69,36 +71,6 @@ export default function App() {
       console.log(error);
     }
   };
-
-  // App State (오랜만에 접속 시 새로고침)
-  const appState = useRef(AppState.currentState);
-
-  const handleAppStateChange = nextAppState => {
-    console.log('⚽️appState nextAppState', appState.current, nextAppState);
-    if (
-      appState.current.match(/inactive|background/) &&
-      nextAppState === 'active'
-    ) {
-      console.log('⚽️⚽️App has come to the foreground!');
-      // webViewRef && webViewRef.reload();
-      myWebWiew.current.reload();
-      console.log(myWebWiew.current.reload());
-    }
-    if (
-      appState.current.match(/inactive|active/) &&
-      nextAppState === 'background'
-    ) {
-      console.log('⚽️⚽️App has come to the background!');
-    }
-    appState.current = nextAppState;
-  };
-
-  useEffect(() => {
-    AppState.addEventListener('change', handleAppStateChange);
-    return () => {
-      AppState.removeEventListener('change', handleAppStateChange);
-    };
-  }, []);
 
   //////////////////////Back button control
   const [exit, setexit] = useState(false);
@@ -293,6 +265,14 @@ window.addEventListener('message', function(event) {
                 useNativeDriver: false,
               },
             )}
+            onContentProcessDidTerminate={syntheticEvent => {
+              const {nativeEvent} = syntheticEvent;
+              console.warn(
+                'Content process terminated, reloading',
+                nativeEvent,
+              );
+              this.refs.webview.reload();
+            }}
             data={data}
             renderItem={({item, index}) => {
               return (
