@@ -35,23 +35,23 @@ import Text2enSVG from './image/text2en.svg';
 const w = Dimensions.get('window').width;
 const h = Dimensions.get('window').height;
 
+const imageDataList = [
+  {no: 1, uri: require('./image/character_edit.png')},
+  {no: 2, uri: require('./image/character_edit2.png')},
+  {no: 3, uri: require('./image/start.png')},
+];
+
+const SOURCE_URL = 'https://gloddy.vercel.app';
+
 export default function App() {
-  const myWebWiew = useRef();
+  const webViewRef = useRef();
   const [lang, setlang] = useState(null);
   const scrollX = useRef(new Animated.Value(0)).current;
-  const [sourceUrl, setsourceUrl] = useState(
-    'https://gloddy.vercel.app/join?step=3',
-  );
   const [webloading, setwebloading] = useState(true);
   const [showindex, setshowindex] = useState(true);
-  const [data, setdata] = useState([
-    {no: 1, uri: require('./image/character_edit.png')},
-    {no: 2, uri: require('./image/character_edit2.png')},
-    {no: 3, uri: require('./image/start.png')},
-  ]);
 
   const onShouldStartLoadWithRequest = event => {
-    if (!event.url.includes('https://gloddy.vercel.app')) {
+    if (!event.url.includes(SOURCE_URL)) {
       Linking.openURL(event.url);
       return false;
     }
@@ -66,7 +66,7 @@ export default function App() {
         Platform: Platform.OS,
         data: lang,
       };
-      myWebWiew.current.postMessage(JSON.stringify(payload));
+      webViewRef.current.postMessage(JSON.stringify(payload));
     } catch (error) {
       console.log(error);
     }
@@ -83,7 +83,7 @@ export default function App() {
   useEffect(() => {
     let timer;
     if (exit === false) {
-      myWebWiew?.current?.goBack();
+      webViewRef?.current?.goBack();
       setexit(true);
       timer = setTimeout(function () {
         setexit(false);
@@ -99,8 +99,7 @@ export default function App() {
     return () =>
       BackHandler.removeEventListener('hardwareBackPress', backAction);
   }, []);
-  /////////////////////////////
-  /////////로딩화면 길게
+
   const [loading, setloading] = useState(true);
   const preloading = async () => {
     const lang = RNLocalize.getLocales()[0].languageCode;
@@ -117,38 +116,6 @@ export default function App() {
       setloading(false);
     }, 3000);
   }, []);
-
-  //////오른쪾으로 밀기
-
-  const panResponder = useRef(
-    PanResponder.create({
-      onMoveShouldSetPanResponder: (event, gestureState) => {
-        const {dx, dy} = gestureState;
-        // 여기서 원하는 조건을 넣어서 제스처를 인식할지 결정합니다.
-        // 오른쪽으로 스와이프하는 제스처를 인식하기 위해 dx 값이 특정 임계값 이상인 경우를 판단합니다.
-
-        return Math.abs(dx) > 50;
-      },
-      onPanResponderMove: (event, gestureState) => {
-        // 웹뷰로 이벤트를 전달해 스와이프 동작을 실행합니다.
-
-        myWebWiew.current?.injectJavaScript(
-          `window.scrollTo(window.scrollX - ${gestureState.dx}, window.scrollY);`,
-        );
-      },
-      onPanResponderRelease: (event, gestureState) => {
-        // 제스처 완료 시 필요한 작업을 수행합니다.
-        const {dx} = gestureState;
-
-        if (dx > 100) {
-          myWebWiew?.current?.goBack();
-        }
-        if (dx < -100) {
-          myWebWiew?.current?.goForward();
-        }
-      },
-    }),
-  ).current;
 
   // 사진 라이브러리를 사용하기 전에 이 함수를 호출해야 합니다.
   ////////////권한설정
@@ -204,22 +171,6 @@ export default function App() {
     }
   };
 
-  ///////////////
-
-  const [cookies, setCookies] = useState('');
-
-  const handleCookieChange = newCookies => {
-    // 쿠키 값이 변경될 때마다 호출됩니다.
-    //console.log('New cookies:', newCookies);
-    //setCookies(newCookies);
-  };
-  const webViewInjectedJS = `
-window.addEventListener('message', function(event) {
-  alert(JSON.stringify(event.data));
-});
-  true;
-`;
-
   const onMessageReceived = async event => {
     //   console.log(event.nativeEvent.data)
     if (event.nativeEvent.data === 'signout') {
@@ -234,8 +185,8 @@ window.addEventListener('message', function(event) {
   };
 
   const onNavigationStateChange = navState => {
-    myWebWiew.canGoBack = navState.canGoBack;
-    if (!navState.url.includes('https://gloddy.vercel.app')) {
+    webViewRef.canGoBack = navState.canGoBack;
+    if (!navState.url.includes(SOURCE_URL)) {
       // 새 탭 열기
       Linking.openURL(navState.url);
       return false;
@@ -265,15 +216,8 @@ window.addEventListener('message', function(event) {
                 useNativeDriver: false,
               },
             )}
-            onContentProcessDidTerminate={syntheticEvent => {
-              const {nativeEvent} = syntheticEvent;
-              console.warn(
-                'Content process terminated, reloading',
-                nativeEvent,
-              );
-              this.refs.webview.reload();
-            }}
-            data={data}
+            onContentProcessDidTerminate={() => webViewRef.current.reload()}
+            data={imageDataList}
             renderItem={({item, index}) => {
               return (
                 <View
@@ -372,9 +316,9 @@ window.addEventListener('message', function(event) {
         <View overScrollMode="never" style={{flex: 1}}>
           <WebView
             style={{flex: 1}}
-            ref={myWebWiew}
+            ref={webViewRef}
             originWhitelist={['*']}
-            source={{uri: sourceUrl}}
+            source={{uri: SOURCE_URL}}
             overScrollMode="never"
             onLoadStart={() => setLoading(true)}
             onLoadEnd={() => setLoading(false)}
@@ -418,53 +362,7 @@ window.addEventListener('message', function(event) {
           color="#999999"
         />
       )}
-      {/*
-     <Animated.View
 
-     style={{
-       backgroundColor:'white',
-       position: 'absolute', // 절대 위치 설정
-       bottom: Platform.OS === "ios"? 20:0, // 창의 바닥에 위치
-       height: tabBarHeight, // 탭바 높이
-       width: Dimensions.get("window").width,
-       flexDirection:'row',
-       alignItems:'center',
-       justifyContent:"center",
-       transform: [{ translateY: tabBarAnimation }], // translateY를 tabBarAnimation 값으로 설정
-     }}
-   >
-     <View       style={{
-
-       width: Dimensions.get("window").width*0.68,
-       flexDirection:'row',
-       alignItems:'center',
-       justifyContent:"space-between"
-     }}>
-    <TouchableOpacity
-    onPress={()=>{ myWebWiew?.current?.goBack();}}
-    style={{width:w*0.2, justifyContent:"center",alignItems:'center'}}
-    >
-     <Text>BACK</Text>
-    </TouchableOpacity>
-    <TouchableOpacity
-    onPress={()=>{
-      setsourceUrl("https://gloddy.vercel.app/grouping")
-     }}
-     style={{width:w*0.2, justifyContent:"center",alignItems:'center'}}
-    >
-     <Text>HOME</Text>
-    </TouchableOpacity>
-
-    <TouchableOpacity
-          style={{width:w*0.2, justifyContent:"center",alignItems:'center'}}
-    onPress={()=>{ setsourceUrl("https://gloddy.vercel.app/join?step=1")
-    }}
-    >
-    <Text>LOGIN</Text>
-    </TouchableOpacity>
-
-    </View>
-   </Animated.View>*/}
       <StatusBar
         animated={false}
         backgroundColor="white"
