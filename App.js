@@ -29,8 +29,7 @@ import Text1enSVG from './image/text1en.svg';
 import Text2SVG from './image/text2.svg';
 import Text2enSVG from './image/text2en.svg';
 
-const w = Dimensions.get('window').width;
-const h = Dimensions.get('window').height;
+const deviceWidth = Dimensions.get('window').width;
 
 const imageDataList = [
   {no: 1, uri: require('./image/character_edit.png')},
@@ -182,7 +181,7 @@ export default function App() {
               return (
                 <View
                   style={{
-                    width: w,
+                    width: deviceWidth,
                     alignItems: 'center',
                     justifyContent: 'center',
                   }}>
@@ -191,8 +190,8 @@ export default function App() {
                       {lang === 'ko' ? <Bubble1SVG /> : <Bubble1enSVG />}
                       <Image
                         style={{
-                          width: w * 0.8,
-                          height: w * 0.8,
+                          width: deviceWidth * 0.8,
+                          height: deviceWidth * 0.8,
                           marginVertical: 20,
                         }}
                         source={item.uri}
@@ -205,8 +204,8 @@ export default function App() {
                       {lang === 'ko' ? <Bubble2SVG /> : <Bubble2enSVG />}
                       <Image
                         style={{
-                          width: w * 0.8,
-                          height: w * 0.8,
+                          width: deviceWidth * 0.8,
+                          height: deviceWidth * 0.8,
                           marginBottom: 20,
                           marginTop: 10,
                         }}
@@ -217,7 +216,10 @@ export default function App() {
                     </View>
                   ) : (
                     <Image
-                      style={{width: w * 0.7, height: w * 1.6}}
+                      style={{
+                        width: deviceWidth * 0.7,
+                        height: deviceWidth * 1.6,
+                      }}
                       source={item.uri}
                       resizeMode="contain"
                     />
@@ -229,7 +231,7 @@ export default function App() {
                         handlestart();
                       }}
                       style={{
-                        width: w * 0.9,
+                        width: deviceWidth * 0.9,
                         height: 60,
                         borderRadius: 10,
                         backgroundColor: 'rgb(75,133,247)',
