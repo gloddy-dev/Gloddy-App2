@@ -2,6 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {
   ActivityIndicator,
   Animated,
+  AppState,
   BackHandler,
   Dimensions,
   Image,
@@ -76,6 +77,36 @@ export default function App() {
       console.log(error);
     }
   };
+
+  // App State (오랜만에 접속 시 새로고침)
+  const appState = useRef(AppState.currentState);
+
+  const handleAppStateChange = nextAppState => {
+    console.log('⚽️appState nextAppState', appState.current, nextAppState);
+    if (
+      appState.current.match(/inactive|background/) &&
+      nextAppState === 'active'
+    ) {
+      console.log('⚽️⚽️App has come to the foreground!');
+      // webViewRef && webViewRef.reload();
+      myWebWiew.current.reload();
+      console.log(myWebWiew.current.reload());
+    }
+    if (
+      appState.current.match(/inactive|active/) &&
+      nextAppState === 'background'
+    ) {
+      console.log('⚽️⚽️App has come to the background!');
+    }
+    appState.current = nextAppState;
+  };
+
+  useEffect(() => {
+    AppState.addEventListener('change', handleAppStateChange);
+    return () => {
+      AppState.removeEventListener('change', handleAppStateChange);
+    };
+  }, []);
 
   //////////////////////Back button control
   const [exit, setexit] = useState(false);
