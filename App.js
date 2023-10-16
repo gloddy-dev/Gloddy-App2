@@ -39,7 +39,7 @@ export default function App() {
   const myWebWiew = useRef();
   const [lang, setlang] = useState(null);
   const scrollX = useRef(new Animated.Value(0)).current;
-  const [sourceUrl, setsourceUrl] = useState('https://gloddy.vercel.app/');
+  const [sourceUrl, setsourceUrl] = useState('https://gloddy.vercel.app');
   const [webloading, setwebloading] = useState(true);
   const [showindex, setshowindex] = useState(true);
   const [data, setdata] = useState([
@@ -47,21 +47,13 @@ export default function App() {
     {no: 2, uri: require('./image/character_edit2.png')},
     {no: 3, uri: require('./image/start.png')},
   ]);
+
   const onShouldStartLoadWithRequest = event => {
-    //console.log(event)
-    if (
-      event.url.startsWith('http://') ||
-      event.url.startsWith('https://') ||
-      event.url.startsWith('about:blank')
-    ) {
-      return true;
-    }
-    if (event.url.includes('external.com')) {
-      // 외부 브라우저로 연결
+    if (!event.url.includes('https://gloddy.vercel.app')) {
       Linking.openURL(event.url);
-      return false; // 웹뷰에서 로드를 중지합니다.
+      return false;
     }
-    return true; // 다른 URL은 웹뷰 내에서 계속 로드됩니다
+    return true;
   };
 
   const sendweb = () => {
@@ -269,6 +261,15 @@ window.addEventListener('message', function(event) {
     setwebloading(false);
   };
 
+  const onNavigationStateChange = navState => {
+    myWebWiew.canGoBack = navState.canGoBack;
+    if (!navState.url.includes('https://gloddy.vercel.app')) {
+      // 새 탭 열기
+      Linking.openURL(navState.url);
+      return false;
+    }
+  };
+
   return (
     <SafeAreaView
       overScrollMode="never"
@@ -399,7 +400,6 @@ window.addEventListener('message', function(event) {
             onLoadEnd={() => setLoading(false)}
             onLoadProgress={({nativeEvent}) => {
               if (nativeEvent.progress === 1) {
-                // 로딩이 완료되었을 때
                 setLoading(false);
               }
             }}
@@ -409,12 +409,16 @@ window.addEventListener('message', function(event) {
             thirdPartyCookiesEnabled={true}
             //  mediaPlaybackRequiresUserAction={false}
             androidHardwareAccelerationDisabled={true}
-            onShouldStartLoadWithRequest={event => {
-              return onShouldStartLoadWithRequest(event);
-            }}
+            // onShouldStartLoadWithRequest={event => {
+            //   return onShouldStartLoadWithRequest(event);
+            // }}
             onLoad={() => sendweb()}
             //  injectedJavaScript={webViewInjectedJS}
             onMessage={onMessageReceived}
+            // 웹뷰 로딩이 시작되거나 끝나면 호출하는 함수 navState로 url 감지
+            onNavigationStateChange={onNavigationStateChange}
+            // 처음 호출한 URL에서 다시 Redirect하는 경우에, 사용하면 navState url 감지
+            onShouldStartLoadWithRequest={onShouldStartLoadWithRequest}
           />
         </View>
       )}
