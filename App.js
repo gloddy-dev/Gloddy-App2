@@ -244,22 +244,6 @@ window.addEventListener('message', function(event) {
       style={{flex: 1, backgroundColor: 'white'}}
       // {...panResponder.panHandlers }
     >
-       {webloading ? 
-       <View style={{ flex: 1, backgroundColor:"white" }} >
-       <SwiperFlatList     
-       initialScrollIndex={0}
-        paginationDefaultColor="gray"
-        paginationActiveColor="rgb(75,133,247)"
-        showPagination={false}
-       pagingEnabled={true}       
-       paginationStyle={{bottom:100}}
-       onChangeIndex={(e)=>setshowindex(e.index)}
-       horizontal={true}
-       onScroll={Animated.event(
-        [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-        {
-          useNativeDriver: false,
-        }
       {webloading ? (
         <View style={{flex: 1, backgroundColor: 'white'}}>
           <SwiperFlatList
