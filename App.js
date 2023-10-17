@@ -13,6 +13,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Alert,
 } from 'react-native';
 import {ExpandingDot} from 'react-native-animated-pagination-dots';
 import * as RNLocalize from 'react-native-localize';
@@ -28,6 +29,8 @@ import Text1SVG from './image/text1.svg';
 import Text1enSVG from './image/text1en.svg';
 import Text2SVG from './image/text2.svg';
 import Text2enSVG from './image/text2en.svg';
+import messaging from '@react-native-firebase/messaging';
+import {AppRegistry} from 'react-native';
 
 const deviceWidth = Dimensions.get('window').width;
 
@@ -39,6 +42,17 @@ const imageDataList = [
 
 const SOURCE_URL = 'https://gloddy.vercel.app';
 
+async function requestUserPermission() {
+  const authStatus = await messaging().requestPermission();
+  const enabled =
+    authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+    authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+  if (enabled) {
+    console.log('Authorization status:', authStatus);
+  }
+}
+
 export default function App() {
   const webViewRef = useRef();
   const [lang, setlang] = useState(null);
@@ -46,6 +60,7 @@ export default function App() {
   const [webloading, setwebloading] = useState(true);
   const [showindex, setshowindex] = useState(true);
 
+  // 알림 권한
   const onShouldStartLoadWithRequest = event => {
     if (!event.url.includes(SOURCE_URL)) {
       Linking.openURL(event.url);
@@ -53,6 +68,22 @@ export default function App() {
     }
     return true;
   };
+
+  // 앱이 Foreground 인 상태에서 푸쉬알림 받는 코드 작성
+  useEffect(() => {
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+    });
+
+    return unsubscribe;
+  }, []);
+
+  // 앱이 Background 이거나 꺼진 상태에서 푸쉬알림 받는 코드 작성
+  messaging().setBackgroundMessageHandler(async remoteMessage => {
+    console.log('Message handled in the background!', remoteMessage);
+  });
+
+  AppRegistry.registerComponent('app', () => App);
 
   const sendweb = () => {
     try {
@@ -129,7 +160,9 @@ export default function App() {
         await request(PERMISSIONS.IOS.CAMERA);
         await request(PERMISSIONS.IOS.MICROPHONE);
         await request(PERMISSIONS.IOS.PHOTO_LIBRARY);
+        await requestUserPermission();
       };
+
       requestPhotoLibraryPermission();
     }
   }, []);
