@@ -9,7 +9,11 @@
     "start": "react-native start",
     "test": "jest",
     "format": "prettier --write --ignore-path .gitignore .",
-    "lint:fix": "eslint '**/*.{js,jsx,ts,tsx}' --fix"
+    "lint:fix": "eslint '**/*.{js,jsx,ts,tsx}' --fix",
+    "clean-install": "rm -rf node_modules && yarn install",
+    "pod-install": "cd ios && if [[ \\\"$(uname -m)\\\" == \\\"arm64\\\" ]]; then arch -x86_64 pod install; else pod install; fi",
+    "ios-clean": "cd ios && rm -rf Pods Podfile.lock && rm -rf ~/Library/Developer/Xcode/DerivgedData && pod deintegrate && pod setup",
+    "android-clean": "cd android && ./gradlew clean"
   },
   "dependencies": {
     "@notifee/react-native": "^7.8.0",

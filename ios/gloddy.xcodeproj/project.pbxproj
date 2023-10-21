@@ -184,7 +184,7 @@
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				00EEFC60759A1932668264C0 /* [CP] Embed Pods Frameworks */,
 				E235C05ADACE081382539298 /* [CP] Copy Pods Resources */,
-				14813B51080AF8EEC01FDACE /* [CP-User] [RNFB] Core Configuration */,
+				42BF82CA02CB2D4708D5E6E7 /* [CP-User] [RNFB] Core Configuration */,
 			);
 			buildRules = (
 			);
@@ -284,7 +284,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-gloddy/Pods-gloddy-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		14813B51080AF8EEC01FDACE /* [CP-User] [RNFB] Core Configuration */ = {
+		42BF82CA02CB2D4708D5E6E7 /* [CP-User] [RNFB] Core Configuration */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
