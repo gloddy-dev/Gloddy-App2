@@ -1,7 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useEffect, useRef, useState} from 'react';
 import {
+  Alert,
   Animated,
+  AppRegistry,
   BackHandler,
   Dimensions,
   Image,
@@ -28,6 +30,19 @@ import Text1SVG from './image/text1.svg';
 import Text1enSVG from './image/text1en.svg';
 import Text2SVG from './image/text2.svg';
 import Text2enSVG from './image/text2en.svg';
+import messaging from '@react-native-firebase/messaging';
+
+// Firebase 알림
+async function requestUserPermission() {
+  const authStatus = await messaging().requestPermission();
+  const enabled =
+    authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+    authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+  if (enabled) {
+    console.log('Authorization status:', authStatus);
+  }
+}
 
 const deviceWidth = Dimensions.get('window').width;
 
@@ -45,6 +60,22 @@ export default function App() {
   const scrollX = useRef(new Animated.Value(0)).current;
   const [webloading, setwebloading] = useState(true);
   const [showindex, setshowindex] = useState(true);
+
+  // 앱이 Foreground 인 상태에서 푸쉬알림 받는 코드 작성
+  useEffect(() => {
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+    });
+
+    return unsubscribe;
+  }, []);
+
+  // 앱이 Background 이거나 꺼진 상태에서 푸쉬알림 받는 코드 작성
+  messaging().setBackgroundMessageHandler(async remoteMessage => {
+    console.log('Message handled in the background!', remoteMessage);
+  });
+
+  AppRegistry.registerComponent('app', () => App);
 
   const onShouldStartLoadWithRequest = event => {
     if (!event.url.includes(SOURCE_URL)) {
@@ -129,6 +160,7 @@ export default function App() {
         await request(PERMISSIONS.IOS.CAMERA);
         await request(PERMISSIONS.IOS.MICROPHONE);
         await request(PERMISSIONS.IOS.PHOTO_LIBRARY);
+        await requestUserPermission();
       };
       requestPhotoLibraryPermission();
     }
