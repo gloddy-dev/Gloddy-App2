@@ -32,6 +32,8 @@ import Text2SVG from './image/text2.svg';
 import Text2enSVG from './image/text2en.svg';
 import messaging from '@react-native-firebase/messaging';
 
+import {StackActions} from '@react-navigation/native';
+
 // Firebase 알림
 async function requestUserPermission() {
   const authStatus = await messaging().requestPermission();
@@ -52,7 +54,7 @@ const imageDataList = [
   {no: 3, uri: require('./image/start.png')},
 ];
 
-const SOURCE_URL = 'https://gloddy.vercel.app';
+const SOURCE_URL = 'http://localhost:3000';
 
 export default function App() {
   const webViewRef = useRef();
@@ -166,13 +168,6 @@ export default function App() {
     }
   }, []);
 
-  const onMessageReceived = async event => {
-    if (event.nativeEvent.data === 'signout') {
-      await AsyncStorage.removeItem('token');
-      setwebloading(true);
-    }
-  };
-
   const handlestart = async () => {
     await AsyncStorage.setItem('token', 'ok');
     setwebloading(false);
@@ -183,6 +178,20 @@ export default function App() {
     if (!navState.url.includes(SOURCE_URL)) {
       Linking.openURL(navState.url);
       return false;
+    }
+  };
+
+  const requestOnMessage = async event => {
+    const nativeEvent = JSON.parse(event.nativeEvent.data);
+    if (nativeEvent === 'signout') {
+      await AsyncStorage.removeItem('token');
+      setwebloading(true);
+    }
+
+    if (nativeEvent.type === 'ROUTER_EVENT') {
+      const {path} = nativeEvent.data;
+      Alert.alert(path);
+      return;
     }
   };
 
@@ -318,7 +327,7 @@ export default function App() {
             thirdPartyCookiesEnabled={true}
             androidHardwareAccelerationDisabled={true}
             onLoad={() => sendweb()}
-            onMessage={onMessageReceived}
+            onMessage={requestOnMessage}
             // 웹뷰 로딩이 시작되거나 끝나면 호출하는 함수 navState로 url 감지
             onNavigationStateChange={onNavigationStateChange}
             // 처음 호출한 URL에서 다시 Redirect하는 경우에, 사용하면 navState url 감지
