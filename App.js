@@ -33,6 +33,8 @@ import Text2enSVG from './image/text2en.svg';
 import messaging from '@react-native-firebase/messaging';
 
 import {StackActions} from '@react-navigation/native';
+import {SOURCE_URL} from './constants';
+import WebViewContainer from './components/WebViewContainer';
 
 // Firebase 알림
 async function requestUserPermission() {
@@ -53,8 +55,6 @@ const imageDataList = [
   {no: 2, uri: require('./image/character_edit2.png')},
   {no: 3, uri: require('./image/start.png')},
 ];
-
-const SOURCE_URL = 'http://localhost:3000';
 
 export default function App() {
   const webViewRef = useRef();
@@ -78,28 +78,6 @@ export default function App() {
   });
 
   AppRegistry.registerComponent('app', () => App);
-
-  const onShouldStartLoadWithRequest = event => {
-    if (!event.url.includes(SOURCE_URL)) {
-      Linking.openURL(event.url);
-      return false;
-    }
-    return true;
-  };
-
-  const sendweb = () => {
-    try {
-      const lang = RNLocalize.getLocales()[0].languageCode;
-      const payload = {
-        type: 'RNLocalize',
-        Platform: Platform.OS,
-        data: lang,
-      };
-      webViewRef.current.postMessage(JSON.stringify(payload));
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   // 뒤로 가기 control
   const [exit, setexit] = useState(false);
@@ -171,28 +149,6 @@ export default function App() {
   const handlestart = async () => {
     await AsyncStorage.setItem('token', 'ok');
     setwebloading(false);
-  };
-
-  const onNavigationStateChange = navState => {
-    webViewRef.canGoBack = navState.canGoBack;
-    if (!navState.url.includes(SOURCE_URL)) {
-      Linking.openURL(navState.url);
-      return false;
-    }
-  };
-
-  const requestOnMessage = async event => {
-    const nativeEvent = JSON.parse(event.nativeEvent.data);
-    if (nativeEvent === 'signout') {
-      await AsyncStorage.removeItem('token');
-      setwebloading(true);
-    }
-
-    if (nativeEvent.type === 'ROUTER_EVENT') {
-      const {path} = nativeEvent.data;
-      Alert.alert(path);
-      return;
-    }
   };
 
   return (
@@ -317,22 +273,7 @@ export default function App() {
         </View>
       ) : (
         <View overScrollMode="never" style={{flex: 1}}>
-          <WebView
-            style={{flex: 1}}
-            ref={webViewRef}
-            originWhitelist={['*']}
-            source={{uri: SOURCE_URL}}
-            overScrollMode="never"
-            pullToRefreshEnabled
-            thirdPartyCookiesEnabled={true}
-            androidHardwareAccelerationDisabled={true}
-            onLoad={() => sendweb()}
-            onMessage={requestOnMessage}
-            // 웹뷰 로딩이 시작되거나 끝나면 호출하는 함수 navState로 url 감지
-            onNavigationStateChange={onNavigationStateChange}
-            // 처음 호출한 URL에서 다시 Redirect하는 경우에, 사용하면 navState url 감지
-            onShouldStartLoadWithRequest={onShouldStartLoadWithRequest}
-          />
+          <WebViewContainer />
         </View>
       )}
 
