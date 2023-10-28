@@ -1,11 +1,59 @@
 import {useRef} from 'react';
 import WebView from 'react-native-webview';
 import {SOURCE_URL} from '../constants';
-import {Alert, Linking, Platform} from 'react-native';
+import {
+  Alert,
+  Dimensions,
+  Linking,
+  Platform,
+  SafeAreaView,
+  StyleSheet,
+  View,
+} from 'react-native';
 import * as RNLocalize from 'react-native-localize';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {NavigationContainer, StackActions} from '@react-navigation/native';
+import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
+
+const Stack = createStackNavigator();
 
 export default function WebViewContainer() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator
+        initialRouteName="Details"
+        screenOptions={{
+          ...TransitionPresets.SlideFromRightIOS,
+          headerShown: false,
+        }}>
+        <Stack.Screen
+          options={{
+            transitionSpec: {
+              open: {
+                animation: 'spring',
+                config: {
+                  stiffness: 2000,
+                  damping: 1000,
+                },
+              },
+              close: {
+                animation: 'spring',
+                config: {
+                  stiffness: 1000,
+                  damping: 500,
+                },
+              },
+            },
+          }}
+          name="Details"
+          component={WebviewItem}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
+
+function WebviewItem({navigation, route}) {
   const webViewRef = useRef();
 
   const sendweb = () => {
@@ -38,7 +86,16 @@ export default function WebViewContainer() {
 
     if (nativeEvent.type === 'ROUTER_EVENT') {
       const {path} = nativeEvent.data;
-      Alert.alert(path);
+      if (path === 'back') {
+        const popAction = StackActions.pop(1);
+        navigation.dispatch(popAction);
+      } else {
+        const pushAction = StackActions.push('Details', {
+          url: 'http://localhost:3000/ko/grouping/create?step=main',
+          isStack: true,
+        });
+        navigation.dispatch(pushAction);
+      }
       return;
     }
   };
@@ -52,9 +109,9 @@ export default function WebViewContainer() {
   };
 
   return (
-    <>
+    <SafeAreaView style={styles.container}>
       <WebView
-        style={{flex: 1}}
+        style={styles.webview}
         ref={webViewRef}
         originWhitelist={['*']}
         source={{uri: SOURCE_URL}}
@@ -67,6 +124,22 @@ export default function WebViewContainer() {
         onNavigationStateChange={onNavigationStateChange} // 웹뷰 로딩이 시작되거나 끝나면 호출하는 함수 navState로 url 감지
         onShouldStartLoadWithRequest={onShouldStartLoadWithRequest} // 처음 호출한 URL에서 다시 Redirect하는 경우에, 사용하면 navState url 감지
       />
-    </>
+    </SafeAreaView>
   );
 }
+
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  webview: {
+    flex: 1,
+    width: windowWidth,
+    height: windowHeight,
+  },
+});

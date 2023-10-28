@@ -87,6 +87,7 @@ export default function App() {
     setswexit(swexit => swexit + 1);
     return true;
   };
+
   useEffect(() => {
     let timer;
     if (exit === false) {
@@ -100,9 +101,9 @@ export default function App() {
       BackHandler.exitApp();
     }
   }, [swexit]);
+
   useEffect(() => {
     BackHandler.addEventListener('hardwareBackPress', backAction);
-
     return () =>
       BackHandler.removeEventListener('hardwareBackPress', backAction);
   }, []);
@@ -115,6 +116,7 @@ export default function App() {
       setwebloading(false);
     }
   };
+
   useEffect(() => {
     preloading();
     setTimeout(() => {
@@ -272,9 +274,7 @@ export default function App() {
           )}
         </View>
       ) : (
-        <View overScrollMode="never" style={{flex: 1}}>
-          <WebViewContainer />
-        </View>
+        <WebViewContainer />
       )}
 
       <StatusBar
