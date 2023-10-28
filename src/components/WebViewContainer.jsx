@@ -1,22 +1,11 @@
+import {useGetUserPermission} from '../hooks/useGetUserPermission';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import messaging from '@react-native-firebase/messaging';
 import {StackActions} from '@react-navigation/native';
-import React, {useEffect, useRef, useState} from 'react';
-import {
-  Alert,
-  AppRegistry,
-  BackHandler,
-  Dimensions,
-  Linking,
-  PermissionsAndroid,
-  Platform,
-  StyleSheet,
-} from 'react-native';
-import {PERMISSIONS, request} from 'react-native-permissions';
+import React, {useRef, useState} from 'react';
+import {Dimensions, Linking, StyleSheet} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import WebView from 'react-native-webview';
 import {SOURCE_URL} from '../constants';
-import {requestUserPermission} from '../utils/requestUserPermission';
 import {sendFCMTokenToWebView} from '../utils/sendFCMTokenToWebView';
 import Error from './Error';
 
@@ -27,41 +16,7 @@ export default function WebViewContainer({navigation, route}) {
     sendFCMTokenToWebView(webViewRef);
   };
 
-  // 앱이 Foreground 인 상태에서 푸쉬알림 받는 코드 작성
-  useEffect(() => {
-    requestUserPermission();
-    const unsubscribe = messaging().onMessage(async remoteMessage => {
-      Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
-    });
-
-    return unsubscribe;
-  }, []);
-
-  // 앱이 Background 이거나 꺼진 상태에서 푸쉬알림 받는 코드 작성
-  messaging().setBackgroundMessageHandler(async remoteMessage => {
-    console.log('Message handled in the background!', remoteMessage);
-  });
-
-  // 권한설정
-  useEffect(() => {
-    if (Platform.OS === 'android') {
-      const getper = async () => {
-        await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.ACCESS_MEDIA_LOCATION,
-        );
-        await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.CAMERA);
-      };
-      getper();
-    }
-    if (Platform.OS === 'ios') {
-      const requestPhotoLibraryPermission = async () => {
-        await request(PERMISSIONS.IOS.CAMERA);
-        await request(PERMISSIONS.IOS.MICROPHONE);
-        await request(PERMISSIONS.IOS.PHOTO_LIBRARY);
-      };
-      requestPhotoLibraryPermission();
-    }
-  }, []);
+  useGetUserPermission();
 
   const onNavigationStateChange = navState => {
     webViewRef.canGoBack = navState.canGoBack;
@@ -69,6 +24,14 @@ export default function WebViewContainer({navigation, route}) {
       Linking.openURL(navState.url);
       return false;
     }
+  };
+
+  const onShouldStartLoadWithRequest = event => {
+    if (!event.url.includes(SOURCE_URL)) {
+      Linking.openURL(event.url);
+      return false;
+    }
+    return true;
   };
 
   const requestOnMessage = async event => {
@@ -90,19 +53,10 @@ export default function WebViewContainer({navigation, route}) {
             url: `${SOURCE_URL}/ko${path}`,
             isStack: true,
           });
-          navigation.dispatch(pushAction);
         }
         break;
       }
     }
-  };
-
-  const onShouldStartLoadWithRequest = event => {
-    if (!event.url.includes(SOURCE_URL)) {
-      Linking.openURL(event.url);
-      return false;
-    }
-    return true;
   };
 
   if (isError) {

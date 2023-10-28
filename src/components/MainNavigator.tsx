@@ -11,7 +11,7 @@ export default function MainNavigator() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName={'onBoarding'}
+        initialRouteName="onBoarding"
         screenOptions={{
           ...TransitionPresets.SlideFromRightIOS,
           headerShown: false,
