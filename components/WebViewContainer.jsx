@@ -16,6 +16,7 @@ import {PERMISSIONS, request} from 'react-native-permissions';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import WebView from 'react-native-webview';
 import {SOURCE_URL} from '../constants';
+import Error from './Error';
 
 // Firebase 알림
 async function requestUserPermission() {
@@ -31,6 +32,7 @@ async function requestUserPermission() {
 
 export default function WebViewContainer({navigation, route}) {
   const webViewRef = useRef();
+  const {isError, setIsError, onWebViewError} = useAppError();
 
   // 앱이 Foreground 인 상태에서 푸쉬알림 받는 코드 작성
   useEffect(() => {
@@ -135,6 +137,17 @@ export default function WebViewContainer({navigation, route}) {
     return true;
   };
 
+  if (isError) {
+    return (
+      <Error
+        reload={() => {
+          webViewRef.current?.reload();
+          setIsError(false);
+        }}
+      />
+    );
+  }
+
   return (
     <>
       <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
@@ -147,9 +160,11 @@ export default function WebViewContainer({navigation, route}) {
           pullToRefreshEnabled
           thirdPartyCookiesEnabled={true}
           androidHardwareAccelerationDisabled={true}
-          onMessage={requestOnMessage} // 웹뷰 -> 앱으로 통신
           onNavigationStateChange={onNavigationStateChange} // 웹뷰 로딩이 시작되거나 끝나면 호출하는 함수 navState로 url 감지
           onShouldStartLoadWithRequest={onShouldStartLoadWithRequest} // 처음 호출한 URL에서 다시 Redirect하는 경우에, 사용하면 navState url 감지
+          onMessage={requestOnMessage} // 웹뷰 -> 앱으로 통신
+          onContentProcessDidTerminate={() => webViewRef.current?.reload()}
+          bounces={false}
         />
       </SafeAreaView>
     </>
@@ -166,3 +181,13 @@ const styles = StyleSheet.create({
     height: windowHeight,
   },
 });
+
+const useAppError = () => {
+  const [isError, setIsError] = useState(false);
+
+  const onWebViewError = () => {
+    setIsError(true);
+  };
+
+  return {isError, setIsError, onWebViewError};
+};
