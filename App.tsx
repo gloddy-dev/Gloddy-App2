@@ -12,7 +12,7 @@ export default function App() {
         hidden={false}
         barStyle="dark-content"
       />
-      <View style={{flex: 1}}>
+      <View style={{flex: 1, backgroundColor: 'white'}}>
         <MainNavigator />
       </View>
     </>

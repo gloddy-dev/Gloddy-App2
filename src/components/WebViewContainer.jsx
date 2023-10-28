@@ -75,7 +75,11 @@ export default function WebViewContainer({navigation, route}) {
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
       <WebView
-        style={{flex: 1, width: windowWidth, height: windowHeight}}
+        style={{
+          flex: 1,
+          width: windowWidth,
+          height: windowHeight,
+        }}
         ref={ref => {
           if (!ref) {
             return;
