@@ -9,6 +9,9 @@ import {SOURCE_URL} from '../constants';
 import {sendFCMTokenToWebView} from '../utils/sendFCMTokenToWebView';
 import Error from './Error';
 
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
+
 export default function WebViewContainer({navigation, route}) {
   const webViewRef = useRef(null);
   const {isError, setIsError, onWebViewError} = useAppError();
@@ -69,47 +72,33 @@ export default function WebViewContainer({navigation, route}) {
       />
     );
   }
-
   return (
-    <>
-      <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
-        <WebView
-          style={styles.webview}
-          ref={ref => {
-            if (!ref) {
-              return;
-            }
-            webViewRef.current = ref;
-          }}
-          originWhitelist={['*']}
-          source={{uri: SOURCE_URL}}
-          overScrollMode="never"
-          pullToRefreshEnabled
-          thirdPartyCookiesEnabled={true}
-          androidHardwareAccelerationDisabled={true}
-          onNavigationStateChange={onNavigationStateChange} // 웹뷰 로딩이 시작되거나 끝나면 호출하는 함수 navState로 url 감지
-          onShouldStartLoadWithRequest={onShouldStartLoadWithRequest} // 처음 호출한 URL에서 다시 Redirect하는 경우에, 사용하면 navState url 감지
-          onMessage={requestOnMessage} // 웹뷰 -> 앱으로 통신
-          onContentProcessDidTerminate={() => webViewRef.current?.reload()}
-          bounces={false}
-          onError={onWebViewError}
-          onLoad={onWebViewLoad}
-        />
-      </SafeAreaView>
-    </>
+    <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
+      <WebView
+        style={{flex: 1, width: windowWidth, height: windowHeight}}
+        ref={ref => {
+          if (!ref) {
+            return;
+          }
+          webViewRef.current = ref;
+        }}
+        originWhitelist={['*']}
+        source={{uri: SOURCE_URL}}
+        overScrollMode="never"
+        pullToRefreshEnabled
+        thirdPartyCookiesEnabled={true}
+        androidHardwareAccelerationDisabled={true}
+        onNavigationStateChange={onNavigationStateChange} // 웹뷰 로딩이 시작되거나 끝나면 호출하는 함수 navState로 url 감지
+        onShouldStartLoadWithRequest={onShouldStartLoadWithRequest} // 처음 호출한 URL에서 다시 Redirect하는 경우에, 사용하면 navState url 감지
+        onMessage={requestOnMessage} // 웹뷰 -> 앱으로 통신
+        onContentProcessDidTerminate={() => webViewRef.current?.reload()}
+        bounces={false}
+        onError={onWebViewError}
+        onLoad={onWebViewLoad}
+      />
+    </SafeAreaView>
   );
 }
-
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
-
-const styles = StyleSheet.create({
-  webview: {
-    flex: 1,
-    width: windowWidth,
-    height: windowHeight,
-  },
-});
 
 const useAppError = () => {
   const [isError, setIsError] = useState(false);
