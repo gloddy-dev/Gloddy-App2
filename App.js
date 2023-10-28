@@ -1,7 +1,6 @@
+import MainNavigator from './src/components/MainNavigator';
 import React from 'react';
 import {StatusBar, View} from 'react-native';
-
-import MainNavigator from './components/MainNavigator';
 
 export default function App() {
   return (

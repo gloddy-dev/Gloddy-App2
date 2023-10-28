@@ -16,8 +16,8 @@ import {PERMISSIONS, request} from 'react-native-permissions';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import WebView from 'react-native-webview';
 import {SOURCE_URL} from '../constants';
-import {requestUserPermission} from '../src/utils/requestUserPermission';
-import {sendFCMTokenToWebView} from '../src/utils/sendFCMTokenToWebView';
+import {requestUserPermission} from '../utils/requestUserPermission';
+import {sendFCMTokenToWebView} from '../utils/sendFCMTokenToWebView';
 import Error from './Error';
 
 export default function WebViewContainer({navigation, route}) {

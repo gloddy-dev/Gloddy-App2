@@ -1,5 +1,5 @@
 import {Button, Text, View} from 'react-native';
-import theme from '../src/styles/theme';
+import theme from '../styles/theme';
 
 interface Props {
   reload: () => void;

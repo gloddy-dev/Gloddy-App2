@@ -12,21 +12,21 @@ import {
 import {ExpandingDot} from 'react-native-animated-pagination-dots';
 import SplashScreen from 'react-native-splash-screen';
 import {SwiperFlatList} from 'react-native-swiper-flatlist';
-import Bubble1SVG from '../image/bubble1.svg';
-import Bubble1enSVG from '../image/bubble1en.svg';
-import Bubble2SVG from '../image/bubble2.svg';
-import Bubble2enSVG from '../image/bubble2en.svg';
-import Text1SVG from '../image/text1.svg';
-import Text1enSVG from '../image/text1en.svg';
-import Text2SVG from '../image/text2.svg';
-import Text2enSVG from '../image/text2en.svg';
+import Bubble1SVG from '../../image/bubble1.svg';
+import Bubble1enSVG from '../../image/bubble1en.svg';
+import Bubble2SVG from '../../image/bubble2.svg';
+import Bubble2enSVG from '../../image/bubble2en.svg';
+import Text1SVG from '../../image/text1.svg';
+import Text1enSVG from '../../image/text1en.svg';
+import Text2SVG from '../../image/text2.svg';
+import Text2enSVG from '../../image/text2en.svg';
 
 const deviceWidth = Dimensions.get('window').width;
 
 const imageDataList = [
-  {no: 1, uri: require('../image/character_edit.png')},
-  {no: 2, uri: require('../image/character_edit2.png')},
-  {no: 3, uri: require('../image/start.png')},
+  {no: 1, uri: require('../../image/character_edit.png')},
+  {no: 2, uri: require('../../image/character_edit2.png')},
+  {no: 3, uri: require('../../image/start.png')},
 ];
 
 export default function OnBoarding({navigation}) {
