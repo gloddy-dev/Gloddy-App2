@@ -1,63 +1,12 @@
-import {useRef, useState} from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {StackActions} from '@react-navigation/native';
+import {useRef} from 'react';
+import {Dimensions, Linking, StyleSheet} from 'react-native';
 import WebView from 'react-native-webview';
 import {SOURCE_URL} from '../constants';
-import {
-  Alert,
-  Dimensions,
-  Linking,
-  Platform,
-  SafeAreaView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
-import * as RNLocalize from 'react-native-localize';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {NavigationContainer, StackActions} from '@react-navigation/native';
-import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 
-const Stack = createStackNavigator();
-
-export default function WebViewContainer() {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator
-        initialRouteName="Details"
-        screenOptions={{
-          ...TransitionPresets.SlideFromRightIOS,
-          headerShown: false,
-        }}>
-        <Stack.Screen
-          options={{
-            transitionSpec: {
-              open: {
-                animation: 'spring',
-                config: {
-                  stiffness: 2000,
-                  damping: 1000,
-                },
-              },
-              close: {
-                animation: 'spring',
-                config: {
-                  stiffness: 1000,
-                  damping: 500,
-                },
-              },
-            },
-          }}
-          name="Details"
-          component={WebviewItem}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
-}
-
-function WebviewItem({navigation, route}) {
+export default function WebViewContainer({navigation, route}) {
   const webViewRef = useRef();
-  const [isLoading, setIsLoading] = useState(true);
 
   const onNavigationStateChange = navState => {
     webViewRef.canGoBack = navState.canGoBack;
@@ -98,30 +47,19 @@ function WebviewItem({navigation, route}) {
   };
 
   return (
-    <SafeAreaView style={styles.container} overScrollMode="never">
-      <WebView
-        style={styles.webview}
-        ref={webViewRef}
-        originWhitelist={['*']}
-        source={{uri: SOURCE_URL}}
-        overScrollMode="never"
-        pullToRefreshEnabled
-        thirdPartyCookiesEnabled={true}
-        androidHardwareAccelerationDisabled={true}
-        onMessage={requestOnMessage} // 웹뷰 -> 앱으로 통신
-        onNavigationStateChange={onNavigationStateChange} // 웹뷰 로딩이 시작되거나 끝나면 호출하는 함수 navState로 url 감지
-        onShouldStartLoadWithRequest={onShouldStartLoadWithRequest} // 처음 호출한 URL에서 다시 Redirect하는 경우에, 사용하면 navState url 감지
-        onLoad={() => setIsLoading(false)}
-      />
-      <StatusBar
-        animated={false}
-        backgroundColor="white"
-        translucent={false}
-        hidden={false}
-        barStyle="dark-content"
-      />
-      {isLoading ? <Text>로딩 중</Text> : null}
-    </SafeAreaView>
+    <WebView
+      style={styles.webview}
+      ref={webViewRef}
+      originWhitelist={['*']}
+      source={{uri: SOURCE_URL}}
+      overScrollMode="never"
+      pullToRefreshEnabled
+      thirdPartyCookiesEnabled={true}
+      androidHardwareAccelerationDisabled={true}
+      onMessage={requestOnMessage} // 웹뷰 -> 앱으로 통신
+      onNavigationStateChange={onNavigationStateChange} // 웹뷰 로딩이 시작되거나 끝나면 호출하는 함수 navState로 url 감지
+      onShouldStartLoadWithRequest={onShouldStartLoadWithRequest} // 처음 호출한 URL에서 다시 Redirect하는 경우에, 사용하면 navState url 감지
+    />
   );
 }
 
@@ -129,12 +67,6 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: 'white',
-  },
   webview: {
     flex: 1,
     width: windowWidth,
