@@ -28,28 +28,7 @@ export default function MainNavigator() {
           headerShown: false,
         }}>
         <Stack.Screen name="onBoarding" component={OnBoarding} />
-        <Stack.Screen
-          options={{
-            transitionSpec: {
-              open: {
-                animation: 'spring',
-                config: {
-                  stiffness: 2000,
-                  damping: 1000,
-                },
-              },
-              close: {
-                animation: 'spring',
-                config: {
-                  stiffness: 1000,
-                  damping: 500,
-                },
-              },
-            },
-          }}
-          name="WebViewContainer"
-          component={WebViewContainer}
-        />
+        <Stack.Screen name="WebViewContainer" component={WebViewContainer} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -47,7 +47,13 @@ export default function OnBoarding({navigation}) {
   }, []);
 
   return (
-    <View style={{flex: 1, backgroundColor: 'white'}}>
+    <View
+      style={{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'white',
+      }}>
       <SwiperFlatList
         initialScrollIndex={0}
         paginationDefaultColor="gray"
