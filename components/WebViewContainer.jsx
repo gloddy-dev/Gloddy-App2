@@ -17,14 +17,19 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import WebView from 'react-native-webview';
 import {SOURCE_URL} from '../constants';
 import {requestUserPermission} from '../src/utils/requestUserPermission';
+import {sendFCMTokenToWebView} from '../src/utils/sendFCMTokenToWebView';
 import Error from './Error';
 
 export default function WebViewContainer({navigation, route}) {
-  const webViewRef = useRef();
+  const webViewRef = useRef(null);
   const {isError, setIsError, onWebViewError} = useAppError();
+  const onWebViewLoad = async () => {
+    sendFCMTokenToWebView(webViewRef);
+  };
 
   // 앱이 Foreground 인 상태에서 푸쉬알림 받는 코드 작성
   useEffect(() => {
+    requestUserPermission();
     const unsubscribe = messaging().onMessage(async remoteMessage => {
       Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
     });
@@ -36,35 +41,6 @@ export default function WebViewContainer({navigation, route}) {
   messaging().setBackgroundMessageHandler(async remoteMessage => {
     console.log('Message handled in the background!', remoteMessage);
   });
-
-  // 뒤로 가기 control
-  const [exit, setexit] = useState(false);
-  const [swexit, setswexit] = useState(0);
-  const backAction = () => {
-    // 500(0.5초) 안에 back 버튼을 한번 더 클릭 할 경우 앱 종료
-    setswexit(swexit => swexit + 1);
-    return true;
-  };
-
-  useEffect(() => {
-    let timer;
-    if (exit === false) {
-      webViewRef?.current?.goBack();
-      setexit(true);
-      timer = setTimeout(function () {
-        setexit(false);
-      }, 500);
-    } else {
-      clearTimeout(timer);
-      BackHandler.exitApp();
-    }
-  }, [swexit]);
-
-  useEffect(() => {
-    BackHandler.addEventListener('hardwareBackPress', backAction);
-    return () =>
-      BackHandler.removeEventListener('hardwareBackPress', backAction);
-  }, []);
 
   // 권한설정
   useEffect(() => {
@@ -82,7 +58,6 @@ export default function WebViewContainer({navigation, route}) {
         await request(PERMISSIONS.IOS.CAMERA);
         await request(PERMISSIONS.IOS.MICROPHONE);
         await request(PERMISSIONS.IOS.PHOTO_LIBRARY);
-        await requestUserPermission();
       };
       requestPhotoLibraryPermission();
     }
@@ -98,23 +73,27 @@ export default function WebViewContainer({navigation, route}) {
 
   const requestOnMessage = async event => {
     const nativeEvent = JSON.parse(event.nativeEvent.data);
-    if (nativeEvent === 'signout') {
-      await AsyncStorage.removeItem('token');
-    }
-
-    if (nativeEvent.type === 'ROUTER_EVENT') {
-      const {path} = nativeEvent.data;
-      if (path === 'back') {
-        const popAction = StackActions.pop(1);
-        navigation.dispatch(popAction);
-      } else {
-        const pushAction = StackActions.push('WebViewContainer', {
-          url: 'https://www.naver.com',
-          isStack: true,
-        });
-        navigation.dispatch(pushAction);
+    const {type, data} = nativeEvent;
+    switch (type) {
+      case 'SIGN_OUT': {
+        AsyncStorage.removeItem('token');
+        break;
       }
-      return;
+      case 'ROUTER_EVENT': {
+        const {path} = nativeEvent.data;
+        if (path === 'back') {
+          const popAction = StackActions.pop(1);
+          navigation.dispatch(popAction);
+        } else {
+          console.log(`${SOURCE_URL}/ko${path}`);
+          const pushAction = StackActions.push('WebViewContainer', {
+            url: `${SOURCE_URL}/ko${path}`,
+            isStack: true,
+          });
+          navigation.dispatch(pushAction);
+        }
+        break;
+      }
     }
   };
 
@@ -142,7 +121,12 @@ export default function WebViewContainer({navigation, route}) {
       <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
         <WebView
           style={styles.webview}
-          ref={webViewRef}
+          ref={ref => {
+            if (!ref) {
+              return;
+            }
+            webViewRef.current = ref;
+          }}
           originWhitelist={['*']}
           source={{uri: SOURCE_URL}}
           overScrollMode="never"
@@ -154,6 +138,8 @@ export default function WebViewContainer({navigation, route}) {
           onMessage={requestOnMessage} // 웹뷰 -> 앱으로 통신
           onContentProcessDidTerminate={() => webViewRef.current?.reload()}
           bounces={false}
+          onError={onWebViewError}
+          onLoad={onWebViewLoad}
         />
       </SafeAreaView>
     </>
