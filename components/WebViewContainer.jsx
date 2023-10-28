@@ -1,4 +1,4 @@
-import {useRef} from 'react';
+import {useRef, useState} from 'react';
 import WebView from 'react-native-webview';
 import {SOURCE_URL} from '../constants';
 import {
@@ -7,7 +7,9 @@ import {
   Linking,
   Platform,
   SafeAreaView,
+  StatusBar,
   StyleSheet,
+  Text,
   View,
 } from 'react-native';
 import * as RNLocalize from 'react-native-localize';
@@ -55,20 +57,7 @@ export default function WebViewContainer() {
 
 function WebviewItem({navigation, route}) {
   const webViewRef = useRef();
-
-  const sendweb = () => {
-    try {
-      const lang = RNLocalize.getLocales()[0].languageCode;
-      const payload = {
-        type: 'RNLocalize',
-        Platform: Platform.OS,
-        data: lang,
-      };
-      webViewRef.current.postMessage(JSON.stringify(payload));
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const [isLoading, setIsLoading] = useState(true);
 
   const onNavigationStateChange = navState => {
     webViewRef.canGoBack = navState.canGoBack;
@@ -91,7 +80,7 @@ function WebviewItem({navigation, route}) {
         navigation.dispatch(popAction);
       } else {
         const pushAction = StackActions.push('Details', {
-          url: 'http://localhost:3000/ko/grouping/create?step=main',
+          url: path,
           isStack: true,
         });
         navigation.dispatch(pushAction);
@@ -109,7 +98,7 @@ function WebviewItem({navigation, route}) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} overScrollMode="never">
       <WebView
         style={styles.webview}
         ref={webViewRef}
@@ -119,11 +108,19 @@ function WebviewItem({navigation, route}) {
         pullToRefreshEnabled
         thirdPartyCookiesEnabled={true}
         androidHardwareAccelerationDisabled={true}
-        onLoad={() => sendweb()}
         onMessage={requestOnMessage} // 웹뷰 -> 앱으로 통신
         onNavigationStateChange={onNavigationStateChange} // 웹뷰 로딩이 시작되거나 끝나면 호출하는 함수 navState로 url 감지
         onShouldStartLoadWithRequest={onShouldStartLoadWithRequest} // 처음 호출한 URL에서 다시 Redirect하는 경우에, 사용하면 navState url 감지
+        onLoad={() => setIsLoading(false)}
       />
+      <StatusBar
+        animated={false}
+        backgroundColor="white"
+        translucent={false}
+        hidden={false}
+        barStyle="dark-content"
+      />
+      {isLoading ? <Text>로딩 중</Text> : null}
     </SafeAreaView>
   );
 }
@@ -136,6 +133,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'space-between',
+    backgroundColor: 'white',
   },
   webview: {
     flex: 1,
