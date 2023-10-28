@@ -20,7 +20,7 @@ import Text1SVG from '../../image/text1.svg';
 import Text1enSVG from '../../image/text1en.svg';
 import Text2SVG from '../../image/text2.svg';
 import Text2enSVG from '../../image/text2en.svg';
-
+import * as RNLocalize from 'react-native-localize';
 const deviceWidth = Dimensions.get('window').width;
 
 const imageDataList = [
@@ -30,16 +30,19 @@ const imageDataList = [
 ];
 
 export default function OnBoarding({navigation}) {
-  const lang = 'ko';
   const scrollX = useRef(new Animated.Value(0)).current;
   const [pageIndex, setpageIndex] = useState(0);
+  const [lang, setlang] = useState(null);
   const preloading = async () => {
     const get = await AsyncStorage.getItem('token');
     if (get) {
       navigation.replace('WebViewContainer');
     }
   };
+
   useEffect(() => {
+    const lang = RNLocalize.getLocales()[0].languageCode;
+    setlang(lang);
     preloading();
     setTimeout(() => {
       SplashScreen.hide();
