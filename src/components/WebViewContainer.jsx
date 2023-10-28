@@ -1,8 +1,14 @@
 import {useGetUserPermission} from '../hooks/useGetUserPermission';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StackActions} from '@react-navigation/native';
-import React, {useRef, useState} from 'react';
-import {Dimensions, Linking, StyleSheet} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import {
+  BackHandler,
+  Dimensions,
+  Linking,
+  Platform,
+  StyleSheet,
+} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import WebView from 'react-native-webview';
 import {SOURCE_URL} from '../constants';
@@ -15,6 +21,7 @@ const windowHeight = Dimensions.get('window').height;
 export default function WebViewContainer({navigation, route}) {
   const webViewRef = useRef(null);
   const {isError, setIsError, onWebViewError} = useAppError();
+  const url = route.params?.url ?? SOURCE_URL;
   const onWebViewLoad = async () => {
     sendFCMTokenToWebView(webViewRef);
   };
@@ -53,14 +60,35 @@ export default function WebViewContainer({navigation, route}) {
         } else {
           console.log(`${SOURCE_URL}/ko${path}`);
           const pushAction = StackActions.push('WebViewContainer', {
-            url: `${SOURCE_URL}/ko${path}`,
-            isStack: true,
+            url: `${SOURCE_URL}${path}`,
           });
+          navigation.dispatch(pushAction);
+          console.log(pushAction);
+          return;
         }
         break;
       }
     }
   };
+
+  const onAndroidBackPress = () => {
+    if (webViewRef.current) {
+      webViewRef.current.goBack();
+      return true;
+    }
+    return false;
+  };
+  useEffect(() => {
+    if (Platform.OS === 'android') {
+      BackHandler.addEventListener('hardwareBackPress', onAndroidBackPress);
+      return () => {
+        BackHandler.removeEventListener(
+          'hardwareBackPress',
+          onAndroidBackPress,
+        );
+      };
+    }
+  }, []);
 
   if (isError) {
     return (
@@ -87,7 +115,7 @@ export default function WebViewContainer({navigation, route}) {
           webViewRef.current = ref;
         }}
         originWhitelist={['*']}
-        source={{uri: SOURCE_URL}}
+        source={{uri: url}}
         overScrollMode="never"
         pullToRefreshEnabled
         thirdPartyCookiesEnabled={true}
@@ -99,6 +127,7 @@ export default function WebViewContainer({navigation, route}) {
         bounces={false}
         onError={onWebViewError}
         onLoad={onWebViewLoad}
+        // allowsBackForwardNavigationGestures={true}
       />
     </SafeAreaView>
   );
