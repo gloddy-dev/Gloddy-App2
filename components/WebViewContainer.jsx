@@ -16,19 +16,8 @@ import {PERMISSIONS, request} from 'react-native-permissions';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import WebView from 'react-native-webview';
 import {SOURCE_URL} from '../constants';
+import {requestUserPermission} from '../src/utils/requestUserPermission';
 import Error from './Error';
-
-// Firebase 알림
-async function requestUserPermission() {
-  const authStatus = await messaging().requestPermission();
-  const enabled =
-    authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-    authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-
-  if (enabled) {
-    console.log('Authorization status:', authStatus);
-  }
-}
 
 export default function WebViewContainer({navigation, route}) {
   const webViewRef = useRef();
