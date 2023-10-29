@@ -28,7 +28,7 @@ const Error = ({reload}: Props) => {
         네트워크 상태가 올바른지 확인해주세요.
       </Text>
       <Text style={{color: theme.colors.gray5, fontSize: 12}}>
-        문제가 지속된다면 ahmatda.app@gmail.com으로 문의해주세요.
+        문제가 지속된다면 gloddy.korea@gmail.com으로 문의해주세요.
       </Text>
 
       <View style={{height: '40%'}} />
