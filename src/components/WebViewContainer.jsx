@@ -70,6 +70,10 @@ export default function WebViewContainer({navigation, route}) {
   };
 
   const onAndroidBackPress = () => {
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    }
+
     if (webViewRef.current) {
       webViewRef.current.goBack();
       return true;
@@ -125,7 +129,6 @@ export default function WebViewContainer({navigation, route}) {
         bounces={false}
         onError={onWebViewError}
         onLoad={onWebViewLoad}
-        // allowsBackForwardNavigationGestures={true}
       />
     </SafeAreaView>
   );
