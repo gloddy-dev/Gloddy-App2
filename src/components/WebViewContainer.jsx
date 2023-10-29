@@ -58,12 +58,10 @@ export default function WebViewContainer({navigation, route}) {
           const popAction = StackActions.pop(1);
           navigation.dispatch(popAction);
         } else {
-          console.log(`${SOURCE_URL}/ko${path}`);
           const pushAction = StackActions.push('WebViewContainer', {
             url: `${SOURCE_URL}${path}`,
           });
           navigation.dispatch(pushAction);
-          console.log(pushAction);
           return;
         }
         break;
