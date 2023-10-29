@@ -52,22 +52,30 @@ export default function WebViewContainer({navigation, route}) {
         break;
       }
       case 'ROUTER_EVENT': {
-        const {path} = nativeEvent.data;
-        if (path === 'back') {
-          const popAction = StackActions.pop(1);
-          navigation.dispatch(popAction);
-        } else {
-          const pushAction = StackActions.push('WebViewContainer', {
-            url: `${SOURCE_URL}${path}`,
-          });
-          navigation.dispatch(pushAction);
-          return;
+        const {path, type} = data;
+        switch (type) {
+          case 'PUSH':
+            const pushAction = StackActions.push('WebViewContainer', {
+              url: `${SOURCE_URL}${path}`,
+            });
+            navigation.dispatch(pushAction);
+            break;
+          case 'BACK':
+            const popAction = StackActions.pop(1);
+            navigation.dispatch(popAction);
+            break;
+          case 'REPLACE':
+            const replaceAction = StackActions.replace('WebViewContainer', {
+              url: `${SOURCE_URL}${path}`,
+            });
+            navigation.dispatch(replaceAction);
+            break;
+          case 'REFRESH':
+            webViewRef.current?.reload();
         }
-        break;
       }
     }
   };
-
   const onAndroidBackPress = () => {
     if (navigation.canGoBack()) {
       navigation.goBack();
@@ -109,12 +117,7 @@ export default function WebViewContainer({navigation, route}) {
           width: windowWidth,
           height: windowHeight,
         }}
-        ref={ref => {
-          if (!ref) {
-            return;
-          }
-          webViewRef.current = ref;
-        }}
+        ref={webViewRef}
         originWhitelist={['*']}
         source={{uri: url}}
         overScrollMode="never"
