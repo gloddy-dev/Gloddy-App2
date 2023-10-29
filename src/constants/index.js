@@ -1,1 +1,1 @@
-export const SOURCE_URL = 'https://gloddy-git-feature-gueit214.vercel.app';
+export const SOURCE_URL = 'http://gloddy-git-develop-gueit214.vercel.app';
