@@ -29,16 +29,15 @@ export default function WebViewContainer({navigation, route}) {
   useGetUserPermission();
 
   const onNavigationStateChange = navState => {
-    webViewRef.canGoBack = navState.canGoBack;
     if (!navState.url.includes(SOURCE_URL)) {
-      Linking.openURL(navState.url);
+      Linking.openURL(navState.url).catch(err => {});
       return false;
     }
   };
 
-  const onShouldStartLoadWithRequest = event => {
-    if (!event.url.includes(SOURCE_URL)) {
-      Linking.openURL(event.url);
+  const onShouldStartLoadWithRequest = navState => {
+    if (!navState.url.includes(SOURCE_URL)) {
+      Linking.openURL(navState.url).catch(err => {});
       return false;
     }
     return true;
