@@ -22,8 +22,9 @@ export default function MainNavigator() {
         screenOptions={{
           ...TransitionPresets.SlideFromRightIOS,
           headerShown: false,
+          presentation: 'transparentModal',
         }}>
-        <Stack.Screen name="onBoarding" component={OnBoarding} />
+        <Stack.Screen name="OnBoarding" component={OnBoarding} />
         <Stack.Screen name="WebViewContainer" component={WebViewContainer} />
       </Stack.Navigator>
     </NavigationContainer>
