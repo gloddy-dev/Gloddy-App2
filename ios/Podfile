@@ -22,7 +22,7 @@ flipper_config = ENV['NO_FLIPPER'] == "1" ? FlipperConfiguration.disabled : Flip
 linkage = ENV['USE_FRAMEWORKS']
 if linkage != nil
   Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
-  use_frameworks! :linkage => linkage.to_sym
+  use_frameworks! :linkage => true
 end
 
 target 'gloddy' do
@@ -31,6 +31,8 @@ target 'gloddy' do
   pod 'Permission-Camera', :path => "#{permissions_path}/Camera"
   pod 'Permission-PhotoLibrary', :path => "#{permissions_path}/PhotoLibrary"
   pod 'Permission-Microphone', :path => "#{permissions_path}/Microphone"
+  pod 'GoogleUtilities', :modular_headers => true
+  pod 'FirebaseCore', :modular_headers => true
   
   # Flags change depending on the env values.
   flags = get_default_flags()
