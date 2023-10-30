@@ -1,17 +1,11 @@
-import {useGetUserPermission} from '../hooks/useGetUserPermission';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {StackActions, NavigationActions} from '@react-navigation/native';
+import {StackActions} from '@react-navigation/native';
 import React, {useEffect, useRef, useState} from 'react';
-import {
-  BackHandler,
-  Dimensions,
-  Linking,
-  Platform,
-  StyleSheet,
-} from 'react-native';
+import {BackHandler, Dimensions, Linking, Platform} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import WebView from 'react-native-webview';
 import {SOURCE_URL} from '../constants';
+import {useGetUserPermission} from '../hooks/useGetUserPermission';
 import {sendFCMTokenToWebView} from '../utils/sendFCMTokenToWebView';
 import Error from './Error';
 
