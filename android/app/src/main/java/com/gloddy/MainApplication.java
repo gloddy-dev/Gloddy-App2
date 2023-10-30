@@ -3,7 +3,7 @@ package com.goodcode.gloddy;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
 
 
-
+import com.reactnativerestart.RestartPackage; 
 import android.app.Application;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
@@ -27,9 +27,10 @@ public class MainApplication extends Application implements ReactApplication {
         protected List<ReactPackage> getPackages() {
           @SuppressWarnings("UnnecessaryLocalVariable")
           List<ReactPackage> packages = new PackageList(this).getPackages();
-          // Packages that cannot be autolinked yet can be added manually here, for example:
-          // packages.add(new MyReactNativePackage());
-          return packages;
+          return Arrays.<ReactPackage>asList(
+            new MainReactPackage(),
+            new RestartPackage() // Add this line
+          );  
         }
 
         @Override
@@ -47,6 +48,7 @@ public class MainApplication extends Application implements ReactApplication {
           return BuildConfig.IS_HERMES_ENABLED;
         }
       };
+  
 
   @Override
   public ReactNativeHost getReactNativeHost() {

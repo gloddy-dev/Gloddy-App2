@@ -1,6 +1,6 @@
 import {useGetUserPermission} from '../hooks/useGetUserPermission';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {StackActions} from '@react-navigation/native';
+import {StackActions, NavigationActions} from '@react-navigation/native';
 import React, {useEffect, useRef, useState} from 'react';
 import {
   BackHandler,
@@ -14,6 +14,8 @@ import WebView from 'react-native-webview';
 import {SOURCE_URL} from '../constants';
 import {sendFCMTokenToWebView} from '../utils/sendFCMTokenToWebView';
 import Error from './Error';
+
+import RNRestart from 'react-native-restart'; // Import package from node modules
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -71,7 +73,7 @@ export default function WebViewContainer({navigation, route}) {
             navigation.dispatch(replaceAction);
             break;
           case 'RESET':
-            navigation.dispatch(StackActions.popToTop());
+            RNRestart.Restart();
         }
       }
     }

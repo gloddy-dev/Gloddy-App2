@@ -33,6 +33,19 @@ target 'gloddy' do
   pod 'Permission-Microphone', :path => "#{permissions_path}/Microphone"
   pod 'GoogleUtilities', :modular_headers => true
   pod 'FirebaseCore', :modular_headers => true
+
+    # Make sure you're also using React-Native from ../node_modules
+    pod 'React', :path => '../node_modules/react-native', :subspecs => [
+      'Core',
+      'RCTActionSheet',
+    # ... whatever else you use
+    ]
+    # React-Native dependencies such as yoga:
+    pod 'yoga', path: '../node_modules/react-native/ReactCommon/yoga'
+  
+    # The following line uses react-native-restart, linking with
+    # the library and setting the Header Search Paths for you
+    pod 'react-native-restart', :path => '../node_modules/react-native-restart'
   
   # Flags change depending on the env values.
   flags = get_default_flags()
