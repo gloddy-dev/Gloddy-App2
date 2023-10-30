@@ -70,8 +70,8 @@ export default function WebViewContainer({navigation, route}) {
             });
             navigation.dispatch(replaceAction);
             break;
-          case 'REFRESH':
-            webViewRef.current?.reload();
+          case 'RESET':
+            navigation.dispatch(StackActions.popToTop());
         }
       }
     }
