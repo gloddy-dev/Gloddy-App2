@@ -8,15 +8,6 @@ require Pod::Executable.execute_command('node', ['-p',
 platform :ios, min_ios_version_supported
 prepare_react_native_project!
 
-# If you are using a `react-native-flipper` your iOS build will fail when `NO_FLIPPER=1` is set.
-# because `react-native-flipper` depends on (FlipperKit,...) that will be excluded
-#
-# To fix this you can also exclude `react-native-flipper` using a `react-native.config.js`
-# ```js
-# module.exports = {
-#   dependencies: {
-#     ...(process.env.NO_FLIPPER ? { 'react-native-flipper': { platforms: { ios: null } } } : {}),
-# ```
 flipper_config = ENV['NO_FLIPPER'] == "1" ? FlipperConfiguration.disabled : FlipperConfiguration.enabled
 
 linkage = ENV['USE_FRAMEWORKS']
@@ -33,21 +24,7 @@ target 'gloddy' do
   pod 'Permission-Microphone', :path => "#{permissions_path}/Microphone"
   pod 'GoogleUtilities', :modular_headers => true
   pod 'FirebaseCore', :modular_headers => true
-
-    # Make sure you're also using React-Native from ../node_modules
-    pod 'React', :path => '../node_modules/react-native', :subspecs => [
-      'Core',
-      'RCTActionSheet',
-    # ... whatever else you use
-    ]
-    # React-Native dependencies such as yoga:
-    pod 'yoga', path: '../node_modules/react-native/ReactCommon/yoga'
   
-    # The following line uses react-native-restart, linking with
-    # the library and setting the Header Search Paths for you
-    pod 'react-native-restart', :path => '../node_modules/react-native-restart'
-  
-  # Flags change depending on the env values.
   flags = get_default_flags()
 
   use_react_native!(

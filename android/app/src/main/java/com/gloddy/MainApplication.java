@@ -3,7 +3,6 @@ package com.goodcode.gloddy;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
 
 
-import com.reactnativerestart.RestartPackage; 
 import android.app.Application;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
@@ -27,10 +26,7 @@ public class MainApplication extends Application implements ReactApplication {
         protected List<ReactPackage> getPackages() {
           @SuppressWarnings("UnnecessaryLocalVariable")
           List<ReactPackage> packages = new PackageList(this).getPackages();
-          return Arrays.<ReactPackage>asList(
-            new MainReactPackage(),
-            new RestartPackage() // Add this line
-          );  
+          return packages;
         }
 
         @Override
