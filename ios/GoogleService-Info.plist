@@ -3,17 +3,17 @@
 <plist version="1.0">
 <dict>
 	<key>API_KEY</key>
-	<string>AIzaSyCyxtqPKS6eoyRvsSm7VNI2GHCi2ERyR4U</string>
+	<string>AIzaSyCBekquAq-iB9XPvfFKc2re2TAtZKdpbnU</string>
 	<key>GCM_SENDER_ID</key>
-	<string>743260252436</string>
+	<string>849154861047</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.goodcode.gloddy</string>
 	<key>PROJECT_ID</key>
-	<string>guesung-exerciseinformation</string>
+	<string>gloddy-e6b23</string>
 	<key>STORAGE_BUCKET</key>
-	<string>guesung-exerciseinformation.appspot.com</string>
+	<string>gloddy-e6b23.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -25,8 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:743260252436:ios:e52ff7c145d907397b7a01</string>
-	<key>DATABASE_URL</key>
-	<string>https://guesung-exerciseinformation-default-rtdb.firebaseio.com</string>
+	<string>1:849154861047:ios:9d8b7e5f07d0664cb7f0f2</string>
 </dict>
 </plist>
