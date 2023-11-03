@@ -8,8 +8,7 @@
     "lint": "eslint .",
     "start": "react-native start",
     "format": "prettier --write --ignore-path .gitignore .",
-    "lint:fix": "eslint '**/*.{js,jsx,ts,tsx}' --fix",
-    "build:android": "cd android && ./gradlew assembleRelease"
+    "lint:fix": "eslint '**/*.{js,jsx,ts,tsx}' --fix"
   },
   "dependencies": {
     "@notifee/react-native": "^7.8.0",

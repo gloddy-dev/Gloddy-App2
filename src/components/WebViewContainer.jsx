@@ -21,7 +21,6 @@ export default function WebViewContainer({navigation, route}) {
   const onWebViewLoad = async () => {
     sendFCMTokenToWebView(webViewRef);
   };
-
   useGetUserPermission();
 
   const onNavigationStateChange = navState => {
