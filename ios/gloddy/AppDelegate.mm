@@ -6,6 +6,9 @@
 #import <React/RCTRootView.h>
 #import "RNSplashScreen.h" 
 
+/* CodePush */
+#import <CodePush/CodePush.h>
+
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -36,7 +39,8 @@
 #if DEBUG
   return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index"];
 #else
-  return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
+/* CodePush */
+  return [CodePush bundleURL]; 
 #endif
 }
 
