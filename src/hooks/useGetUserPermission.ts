@@ -9,7 +9,10 @@ export function useGetUserPermission() {
   useEffect(() => {
     requestUserPermission();
     const unsubscribe = messaging().onMessage(async remoteMessage => {
-      Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+      const {
+        data: { body, title },
+      } = remoteMessage;
+      Alert.alert(title, body);
     });
 
     return unsubscribe;
