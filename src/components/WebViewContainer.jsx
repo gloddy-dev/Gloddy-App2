@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StackActions} from '@react-navigation/native';
 import React, {useEffect, useRef, useState} from 'react';
-import {BackHandler, Dimensions, Linking, Platform} from 'react-native';
+import {Alert, BackHandler, Dimensions, Linking, Platform} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import WebView from 'react-native-webview';
 import {SOURCE_URL} from '../constants';
@@ -47,9 +47,10 @@ export default function WebViewContainer({navigation, route}) {
         break;
       }
       case 'ROUTER_EVENT': {
-        const {path, type} = data;
-        switch (type) {
+        const {path, type: pathType} = data;
+        switch (pathType) {
           case 'PUSH':
+            console.log(1);
             const pushAction = StackActions.push('WebViewContainer', {
               url: `${SOURCE_URL}${path}`,
             });
@@ -74,6 +75,14 @@ export default function WebViewContainer({navigation, route}) {
   const onAndroidBackPress = () => {
     if (navigation.canGoBack()) {
       navigation.goBack();
+    } else {
+      Alert.alert('Hold on!', '앱을 종료하시겠습니까?', [
+        {
+          text: '취소',
+          onPress: () => null,
+        },
+        {text: '확인', onPress: () => BackHandler.exitApp()},
+      ]);
     }
 
     if (webViewRef.current) {
@@ -82,6 +91,7 @@ export default function WebViewContainer({navigation, route}) {
     }
     return false;
   };
+
   useEffect(() => {
     if (Platform.OS === 'android') {
       BackHandler.addEventListener('hardwareBackPress', onAndroidBackPress);
