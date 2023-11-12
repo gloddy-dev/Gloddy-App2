@@ -23,13 +23,13 @@ export default function WebViewContainer({navigation, route}) {
   };
   useGetUserPermission();
 
+  /* (iOS)외부 페이지 이동 */
   const onNavigationStateChange = navState => {
     if (!navState.url.includes(SOURCE_URL)) {
       Linking.openURL(navState.url).catch(err => {});
       return false;
     }
   };
-
   const onShouldStartLoadWithRequest = navState => {
     if (!navState.url.includes(SOURCE_URL)) {
       Linking.openURL(navState.url).catch(err => {});
@@ -38,6 +38,7 @@ export default function WebViewContainer({navigation, route}) {
     return true;
   };
 
+  /* 페이지 이동 */
   const requestOnMessage = async event => {
     const nativeEvent = JSON.parse(event.nativeEvent.data);
     const {type, data} = nativeEvent;
@@ -50,7 +51,6 @@ export default function WebViewContainer({navigation, route}) {
         const {path, type: pathType} = data;
         switch (pathType) {
           case 'PUSH':
-            console.log(1);
             const pushAction = StackActions.push('WebViewContainer', {
               url: `${SOURCE_URL}${path}`,
             });
@@ -72,6 +72,8 @@ export default function WebViewContainer({navigation, route}) {
       }
     }
   };
+
+  /* (안드로이드) 첫 화면에서 뒤로가기 */
   const onAndroidBackPress = () => {
     if (navigation.canGoBack()) {
       navigation.goBack();
@@ -91,7 +93,6 @@ export default function WebViewContainer({navigation, route}) {
     }
     return false;
   };
-
   useEffect(() => {
     if (Platform.OS === 'android') {
       BackHandler.addEventListener('hardwareBackPress', onAndroidBackPress);
@@ -109,6 +110,7 @@ export default function WebViewContainer({navigation, route}) {
       <Error
         reload={() => {
           webViewRef.current?.reload();
+          RNRestart.Restart();
           setIsError(false);
         }}
       />
@@ -129,8 +131,8 @@ export default function WebViewContainer({navigation, route}) {
         pullToRefreshEnabled
         thirdPartyCookiesEnabled={true}
         androidHardwareAccelerationDisabled={true}
-        onNavigationStateChange={onNavigationStateChange} // 웹뷰 로딩이 시작되거나 끝나면 호출하는 함수 navState로 url 감지
-        onShouldStartLoadWithRequest={onShouldStartLoadWithRequest} // 처음 호출한 URL에서 다시 Redirect하는 경우에, 사용하면 navState url 감지
+        onNavigationStateChange={onNavigationStateChange}
+        onShouldStartLoadWithRequest={onShouldStartLoadWithRequest}
         onMessage={requestOnMessage} // 웹뷰 -> 앱으로 통신
         onContentProcessDidTerminate={() => webViewRef.current?.reload()}
         bounces={false}
