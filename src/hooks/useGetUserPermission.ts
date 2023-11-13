@@ -10,7 +10,6 @@ export function useGetUserPermission(webViewRef: RefObject<WebView>) {
   useEffect(() => {
     requestUserPermission();
     const unsubscribe = messaging().onMessage(async remoteMessage => {
-      Alert.alert(JSON.stringify(remoteMessage));
       const {
         data: { title, content, redirectId },
       } = remoteMessage;
