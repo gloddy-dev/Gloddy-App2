@@ -21,7 +21,7 @@ export default function WebViewContainer({navigation, route}) {
   const onWebViewLoad = async () => {
     sendFCMTokenToWebView(webViewRef);
   };
-  useGetUserPermission();
+  useGetUserPermission(webViewRef);
 
   /* (iOS)외부 페이지 이동 */
   const onNavigationStateChange = navState => {
@@ -93,6 +93,7 @@ export default function WebViewContainer({navigation, route}) {
     }
     return false;
   };
+
   useEffect(() => {
     if (Platform.OS === 'android') {
       BackHandler.addEventListener('hardwareBackPress', onAndroidBackPress);
