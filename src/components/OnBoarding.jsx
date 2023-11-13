@@ -34,7 +34,7 @@ export default function OnBoarding({navigation}) {
   const [pageIndex, setpageIndex] = useState(0);
   const [lang, setlang] = useState(null);
   const preloading = async () => {
-    const get = await AsyncStorage.getItem('token');
+    const get = await AsyncStorage.getItem('onBoarding');
     if (get) {
       navigation.replace('WebViewContainer');
     }
