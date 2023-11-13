@@ -7,11 +7,12 @@ import { requestUserPermission } from '../utils/requestUserPermission';
 export function useGetUserPermission() {
   // FCM 권한
   useEffect(() => {
-    messaging().requestPermission();
+    requestUserPermission();
     const unsubscribe = messaging().onMessage(async remoteMessage => {
-      // const { data } = remoteMessage;
-      console.log(remoteMessage);
-      Alert.alert('알림');
+      const {
+        data: { body, title },
+      } = remoteMessage;
+      Alert.alert(title, body);
     });
 
     return unsubscribe;
