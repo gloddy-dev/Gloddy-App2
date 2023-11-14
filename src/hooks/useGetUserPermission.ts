@@ -5,11 +5,20 @@ import { PERMISSIONS, request } from 'react-native-permissions';
 import WebView from 'react-native-webview';
 import { requestUserPermission } from '../utils/requestUserPermission';
 
+type RemoteMessageType = {
+  data: {
+    title: string;
+    content: string;
+    redirectId: string;
+  };
+};
+
+
 export function useGetUserPermission(webViewRef: RefObject<WebView>) {
   // FCM 권한
   useEffect(() => {
     requestUserPermission();
-    const unsubscribe = messaging().onMessage(async remoteMessage => {
+    const unsubscribe = messaging().onMessage(async (remoteMessage) => {
       const {
         data: { title, content, redirectId },
       } = remoteMessage;
