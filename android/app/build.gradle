@@ -1,6 +1,9 @@
 apply plugin: "com.android.application"
-apply plugin: 'com.google.gms.google-services' // <- 추가
+apply plugin: 'com.google.gms.google-services' 
 apply plugin: "com.facebook.react"
+
+apply plugin: "com.android.application"
+
 
 /**
  * This is the configuration block to customize your React Native Android app.
@@ -74,6 +77,16 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
+    project.ext.envConfigFiles = [
+        productiondebug: ".env.production",
+        productionrelease: ".env.production",
+        developmentrelease: ".env.development",
+        developmentdebug: ".env.development",
+        stagingrelease: ".env.staging",
+        stagingdebug: ".env.staging"
+    ]
+
+
     namespace "com.goodcode.gloddy"
     defaultConfig {
         applicationId "com.goodcode.gloddy"
@@ -103,10 +116,9 @@ android {
         debug {
             signingConfig signingConfigs.release
             resValue "string", "CodePushDeploymentKey", CODEPUSH_DEPLOYMENT_KEY_DEBUG
+            matchingFallbacks = ['debug', 'release']
         }
         release {
-            // Caution! In production, you need to generate your own keystore file.
-            // see https://reactnative.dev/docs/signed-apk-android.
             signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
@@ -118,6 +130,14 @@ android {
             resValue "string", "CodePushDeploymentKey", CODEPUSH_DEPLOYMENT_KEY_STAGING
             matchingFallbacks = ['release']
         }
+    }
+    flavorDimensions "default"
+    productFlavors {
+        production {}
+        staging {
+        // 여기서 빌드별 구성을 할 수 있습니다.
+        }
+        development {}
     }
 }
 
@@ -140,4 +160,6 @@ dependencies {
     }
 }
 
+
+apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
