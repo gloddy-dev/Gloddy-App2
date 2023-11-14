@@ -1,0 +1,6 @@
+ENV=DEVELOPMENT
+APP_ID=com.sohee.rnstudy.develop
+BUILD_VERSION=211230
+APP_VERSION=1.0.0
+APP_NAME=RN Study - DEV
+APP_API_URL=https:/$()/dev-rnstudy.com/api/app
