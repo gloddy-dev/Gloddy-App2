@@ -21,7 +21,6 @@ function App() {
 }
 
 const codePushOptions = {
-  checkFrequency: CodePush.CheckFrequency.ON_APP_RESUME,
   updateDialog: {
     title: 'New Version(새로운 버전)',
     optionalUpdateMessage:
@@ -29,6 +28,7 @@ const codePushOptions = {
     optionalInstallButtonLabel: 'Yes (네)',
     optionalIgnoreButtonLabel: '아니오 (No)',
   },
+  checkFrequency: CodePush.CheckFrequency.ON_APP_RESUME,
   installMode: CodePush.InstallMode.IMMEDIATE,
 };
 
