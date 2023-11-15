@@ -78,13 +78,17 @@ export default function WebViewContainer({navigation, route}) {
     if (navigation.canGoBack()) {
       navigation.goBack();
     } else {
-      Alert.alert('Hold on!', '앱을 종료하시겠습니까?', [
-        {
-          text: '취소',
-          onPress: () => null,
-        },
-        {text: '확인', onPress: () => BackHandler.exitApp()},
-      ]);
+      Alert.alert(
+        'Hold on!(잠시만요!)',
+        'Are you sure you want to quit the program?(앱을 종료하시겠습니까?)',
+        [
+          {
+            text: '취소',
+            onPress: () => null,
+          },
+          {text: '확인', onPress: () => BackHandler.exitApp()},
+        ],
+      );
     }
 
     if (webViewRef.current) {
