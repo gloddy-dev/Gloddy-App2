@@ -4,12 +4,13 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Alert, BackHandler, Dimensions, Linking, Platform} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import WebView from 'react-native-webview';
-import {SOURCE_URL} from '../constants';
+
 import {useGetUserPermission} from '../hooks/useGetUserPermission';
 import {sendFCMTokenToWebView} from '../utils/sendFCMTokenToWebView';
 import Error from './Error';
 
 import RNRestart from 'react-native-restart'; // Import package from node modules
+import {SOURCE_URL} from '../config';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
