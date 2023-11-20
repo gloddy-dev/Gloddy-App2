@@ -67,4 +67,7 @@ yarn-error.log
 
 private_key.pepk
 
-.env.*
+.env*
+
+# react-native-config codegen
+**.xcconfig
