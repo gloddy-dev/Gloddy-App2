@@ -74,9 +74,6 @@ export default function WebViewContainer({navigation, route}) {
     }
   };
 
-  useEffect(() => {
-    Alert.alert('STAING _ TEST중입니다');
-  }, []);
 
   /* (안드로이드) 첫 화면에서 뒤로가기 */
   const onAndroidBackPress = () => {
