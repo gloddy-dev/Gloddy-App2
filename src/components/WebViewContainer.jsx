@@ -122,6 +122,7 @@ export default function WebViewContainer({navigation, route}) {
       />
     );
   }
+
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
       <WebView

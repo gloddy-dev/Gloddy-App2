@@ -13,7 +13,6 @@ type RemoteMessageType = {
   };
 };
 
-
 export function useGetUserPermission(webViewRef: RefObject<WebView>) {
   // FCM 권한
   useEffect(() => {
