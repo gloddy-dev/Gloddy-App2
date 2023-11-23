@@ -3,7 +3,6 @@ import { RefObject, useEffect } from 'react';
 import { Alert, PermissionsAndroid, Platform } from 'react-native';
 import { PERMISSIONS, request } from 'react-native-permissions';
 import WebView from 'react-native-webview';
-import { requestUserPermission } from '../utils/requestUserPermission';
 import { useDidMount } from './useDidMount';
 
 type RemoteMessageType = {
@@ -20,8 +19,9 @@ export function useGetUserPermission(webViewRef: RefObject<WebView>) {
     await messaging().requestPermission();
     const unsubscribe = messaging().onMessage(async (remoteMessage) => {
       const {
-        data: { title, content, redirectId },
+        data,
       } = remoteMessage;
+      const { title, content, redirectId } = data as RemoteMessageType['data'];
       Alert.alert(title, content);
     });
 
