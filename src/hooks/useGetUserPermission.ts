@@ -4,6 +4,7 @@ import { Alert, PermissionsAndroid, Platform } from 'react-native';
 import { PERMISSIONS, request } from 'react-native-permissions';
 import WebView from 'react-native-webview';
 import { requestUserPermission } from '../utils/requestUserPermission';
+import { useDidMount } from './useDidMount';
 
 type RemoteMessageType = {
   data: {
@@ -15,8 +16,8 @@ type RemoteMessageType = {
 
 export function useGetUserPermission(webViewRef: RefObject<WebView>) {
   // FCM 권한
-  useEffect(() => {
-    requestUserPermission();
+  useDidMount(async () => {
+    await messaging().requestPermission();
     const unsubscribe = messaging().onMessage(async (remoteMessage) => {
       const {
         data: { title, content, redirectId },
@@ -25,12 +26,12 @@ export function useGetUserPermission(webViewRef: RefObject<WebView>) {
     });
 
     return unsubscribe;
-  }, []);
+  });
   messaging().setBackgroundMessageHandler(async remoteMessage => {
     console.log('Message handled in the background!', remoteMessage);
   });
 
-  // 권한설정
+  // 권한 설정
   useEffect(() => {
     if (Platform.OS === 'android') {
       const getper = async () => {

@@ -22,6 +22,8 @@ export default function WebViewContainer({navigation, route}) {
   const onWebViewLoad = async () => {
     sendFCMTokenToWebView(webViewRef);
   };
+
+  // 사용자 권한 요청
   useGetUserPermission(webViewRef);
 
   /* (iOS)외부 페이지 이동 */
@@ -73,7 +75,6 @@ export default function WebViewContainer({navigation, route}) {
       }
     }
   };
-
 
   /* (안드로이드) 첫 화면에서 뒤로가기 */
   const onAndroidBackPress = () => {
