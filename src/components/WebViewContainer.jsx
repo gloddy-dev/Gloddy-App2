@@ -24,7 +24,7 @@ export default function WebViewContainer({navigation, route}) {
   };
 
   // 사용자 권한 요청
-  useGetUserPermission(webViewRef);
+  useGetUserPermission();
 
   /* (iOS)외부 페이지 이동 */
   const onNavigationStateChange = navState => {

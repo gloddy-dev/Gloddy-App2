@@ -13,7 +13,7 @@ type RemoteMessageType = {
   };
 };
 
-export function useGetUserPermission(webViewRef: RefObject<WebView>) {
+export function useGetUserPermission() {
   // FCM 권한
   useDidMount(async () => {
     await messaging().requestPermission();
