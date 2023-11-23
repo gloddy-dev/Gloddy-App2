@@ -1,18 +1,27 @@
 import messaging from '@react-native-firebase/messaging';
-import { useEffect } from 'react';
+import { RefObject, useEffect } from 'react';
 import { Alert, PermissionsAndroid, Platform } from 'react-native';
 import { PERMISSIONS, request } from 'react-native-permissions';
+import WebView from 'react-native-webview';
 import { requestUserPermission } from '../utils/requestUserPermission';
 
-export function useGetUserPermission() {
+type RemoteMessageType = {
+  data: {
+    title: string;
+    content: string;
+    redirectId: string;
+  };
+};
+
+export function useGetUserPermission(webViewRef: RefObject<WebView>) {
   // FCM 권한
   useEffect(() => {
     requestUserPermission();
-    const unsubscribe = messaging().onMessage(async remoteMessage => {
+    const unsubscribe = messaging().onMessage(async (remoteMessage) => {
       const {
-        data: { body, title },
+        data: { title, content, redirectId },
       } = remoteMessage;
-      Alert.alert(title, body);
+      Alert.alert(title, content);
     });
 
     return unsubscribe;

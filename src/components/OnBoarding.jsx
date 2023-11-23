@@ -1,7 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useEffect, useRef, useState} from 'react';
 import {
-  Alert,
   Animated,
   Dimensions,
   Image,
@@ -10,6 +9,7 @@ import {
   View,
 } from 'react-native';
 import {ExpandingDot} from 'react-native-animated-pagination-dots';
+import * as RNLocalize from 'react-native-localize';
 import SplashScreen from 'react-native-splash-screen';
 import {SwiperFlatList} from 'react-native-swiper-flatlist';
 import Bubble1SVG from '../../image/bubble1.svg';
@@ -20,7 +20,6 @@ import Text1SVG from '../../image/text1.svg';
 import Text1enSVG from '../../image/text1en.svg';
 import Text2SVG from '../../image/text2.svg';
 import Text2enSVG from '../../image/text2en.svg';
-import * as RNLocalize from 'react-native-localize';
 const deviceWidth = Dimensions.get('window').width;
 
 const imageDataList = [
@@ -34,7 +33,7 @@ export default function OnBoarding({navigation}) {
   const [pageIndex, setpageIndex] = useState(0);
   const [lang, setlang] = useState(null);
   const preloading = async () => {
-    const get = await AsyncStorage.getItem('token');
+    const get = await AsyncStorage.getItem('onBoarding');
     if (get) {
       navigation.replace('WebViewContainer');
     }
