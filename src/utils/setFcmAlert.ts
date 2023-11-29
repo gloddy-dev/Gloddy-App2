@@ -14,7 +14,7 @@ type RemoteMessageType = {
   };
 };
 
-export const setFcmAlert = (navigation) => {
+export const setFcmAlert = () => {
   const unsubscribe = messaging().onMessage((remoteMessage) => {
     const {
       data,
@@ -32,8 +32,7 @@ export const setFcmAlert = (navigation) => {
       content,
       [
         {
-          text: 'Go To Page',
-          onPress: () => navigation.dispatch(pushAction),
+          text: 'You have received a notification.',
         },
       ],
     );

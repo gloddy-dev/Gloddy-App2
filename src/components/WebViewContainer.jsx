@@ -29,7 +29,6 @@ export default function WebViewContainer({navigation, route}) {
     await getPermission('camera');
     await getPermission('photoLibrary');
     await messaging().requestPermission();
-    setFcmAlert(navigation);
   }, []);
 
   /* 안드로이드 뒤로가기 */
