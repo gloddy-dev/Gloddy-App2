@@ -151,7 +151,6 @@ export default function WebViewContainer({navigation, route}) {
         onContentProcessDidTerminate={() => webViewRef.current?.reload()}
         bounces={false}
         onError={onWebViewError}
-        onLoad={onWebViewLoad}
         webviewDebuggingEnabled={true}
       />
     </SafeAreaView>
