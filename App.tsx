@@ -6,10 +6,6 @@ import CodePush from 'react-native-code-push';
 import MainNavigator from './src/components/MainNavigator';
 
 function App() {
-  useDidMount(() => {
-    setFcmAlert();
-  });
-
   return (
     <>
       <StatusBar

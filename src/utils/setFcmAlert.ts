@@ -14,7 +14,7 @@ type RemoteMessageType = {
   };
 };
 
-export const setFcmAlert = () => {
+export const setFcmAlert = (navigationRef) => {
   const unsubscribe = messaging().onMessage((remoteMessage) => {
     const {
       data,
@@ -23,16 +23,19 @@ export const setFcmAlert = () => {
 
     const path = getNotificationPath(type, Number(redirectId));
 
-    const pushAction = StackActions.push('WebViewContainer', {
-      url: `${SOURCE_URL}${path}`,
-    });
-
     Alert.alert(
       title,
       content,
       [
         {
           text: 'You have received a notification.',
+          onPress: () => {
+            navigationRef.dispatch(
+              StackActions.push('WebViewContainer', {
+                url: `${SOURCE_URL}${path}`,
+              })
+            )
+          }
         },
       ],
     );
