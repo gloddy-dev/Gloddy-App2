@@ -1,7 +1,7 @@
-import MainNavigator from './src/components/MainNavigator';
 import React from 'react';
 import {StatusBar, View} from 'react-native';
 import CodePush from 'react-native-code-push';
+import MainNavigator from './src/components/MainNavigator';
 
 function App() {
   return (

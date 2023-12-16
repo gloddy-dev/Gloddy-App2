@@ -1,14 +1,16 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StackActions} from '@react-navigation/native';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {Alert, BackHandler, Dimensions, Linking, Platform} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import WebView from 'react-native-webview';
 
-import {useGetUserPermission} from '../hooks/useGetUserPermission';
 import {sendFCMTokenToWebView} from '../utils/sendFCMTokenToWebView';
 import Error from './Error';
 
+import {useDidMount} from '@/hooks/useDidMount';
+import {getPermission} from '@/utils/getPermission';
+import messaging from '@react-native-firebase/messaging';
 import RNRestart from 'react-native-restart'; // Import package from node modules
 import {SOURCE_URL} from '../config';
 
@@ -19,10 +21,50 @@ export default function WebViewContainer({navigation, route}) {
   const webViewRef = useRef(null);
   const {isError, setIsError, onWebViewError} = useAppError();
   const url = route.params?.url ?? SOURCE_URL;
-  const onWebViewLoad = async () => {
+
+  useDidMount(async () => {
+    /* 권한 요청 */
     sendFCMTokenToWebView(webViewRef);
-  };
-  useGetUserPermission(webViewRef);
+    await getPermission('camera');
+    await getPermission('photoLibrary');
+    await messaging().requestPermission();
+  }, []);
+
+  /* 안드로이드 뒤로가기 */
+  useDidMount(() => {
+    const handleAndroidBackPress = () => {
+      if (navigation.canGoBack()) navigation.goBack();
+      else {
+        Alert.alert(
+          'Hold on!(잠시만요!)',
+          'Are you sure you want to quit the program?(앱을 종료하시겠습니까?)',
+          [
+            {
+              text: 'Cancel(취소)',
+              onPress: () => null,
+            },
+            {text: 'Confirm(확인)', onPress: () => BackHandler.exitApp()},
+          ],
+        );
+      }
+
+      if (webViewRef.current) {
+        webViewRef.current.goBack();
+        return true;
+      }
+      return false;
+    };
+
+    if (Platform.OS === 'android') {
+      BackHandler.addEventListener('hardwareBackPress', handleAndroidBackPress);
+      return () => {
+        BackHandler.removeEventListener(
+          'hardwareBackPress',
+          handleAndroidBackPress,
+        );
+      };
+    }
+  });
 
   /* (iOS)외부 페이지 이동 */
   const onNavigationStateChange = navState => {
@@ -74,44 +116,6 @@ export default function WebViewContainer({navigation, route}) {
     }
   };
 
-
-  /* (안드로이드) 첫 화면에서 뒤로가기 */
-  const onAndroidBackPress = () => {
-    if (navigation.canGoBack()) {
-      navigation.goBack();
-    } else {
-      Alert.alert(
-        'Hold on!(잠시만요!)',
-        'Are you sure you want to quit the program?(앱을 종료하시겠습니까?)',
-        [
-          {
-            text: '취소',
-            onPress: () => null,
-          },
-          {text: '확인', onPress: () => BackHandler.exitApp()},
-        ],
-      );
-    }
-
-    if (webViewRef.current) {
-      webViewRef.current.goBack();
-      return true;
-    }
-    return false;
-  };
-
-  useEffect(() => {
-    if (Platform.OS === 'android') {
-      BackHandler.addEventListener('hardwareBackPress', onAndroidBackPress);
-      return () => {
-        BackHandler.removeEventListener(
-          'hardwareBackPress',
-          onAndroidBackPress,
-        );
-      };
-    }
-  }, []);
-
   if (isError) {
     return (
       <Error
@@ -145,7 +149,7 @@ export default function WebViewContainer({navigation, route}) {
         onContentProcessDidTerminate={() => webViewRef.current?.reload()}
         bounces={false}
         onError={onWebViewError}
-        onLoad={onWebViewLoad}
+        webviewDebuggingEnabled={true}
       />
     </SafeAreaView>
   );
