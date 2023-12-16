@@ -10,7 +10,6 @@ import Error from './Error';
 
 import {useDidMount} from '@/hooks/useDidMount';
 import {getPermission} from '@/utils/getPermission';
-import {setFcmAlert} from '@/utils/setFcmAlert';
 import messaging from '@react-native-firebase/messaging';
 import RNRestart from 'react-native-restart'; // Import package from node modules
 import {SOURCE_URL} from '../config';

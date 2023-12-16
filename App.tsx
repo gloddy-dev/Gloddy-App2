@@ -1,5 +1,3 @@
-import {useDidMount} from '@/hooks/useDidMount';
-import {setFcmAlert} from '@/utils/setFcmAlert';
 import React from 'react';
 import {StatusBar, View} from 'react-native';
 import CodePush from 'react-native-code-push';
