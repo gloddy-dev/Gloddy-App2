@@ -25,8 +25,6 @@ export default function WebViewContainer({navigation, route}) {
   useDidMount(async () => {
     /* 권한 요청 */
     sendFCMTokenToWebView(webViewRef);
-    await getPermission('camera');
-    await getPermission('photoLibrary');
     await messaging().requestPermission();
   }, []);
 
@@ -111,6 +109,13 @@ export default function WebViewContainer({navigation, route}) {
             break;
           case 'RESET':
             RNRestart.Restart();
+        }
+      }
+      case 'GET_PERMISSION': {
+        switch (data) {
+          case 'IMAGE':
+            await getPermission('camera');
+            await getPermission('photoLibrary');
         }
       }
     }
