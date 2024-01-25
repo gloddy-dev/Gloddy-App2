@@ -16,7 +16,7 @@ const BottomTabNavigator = ({children}: PropsWithChildren) => {
       screenOptions: {
         headerShown: false,
         lazy: false,
-      } satisfies BottomTabNavigationOptions,
+      },
     }),
     [],
   );
