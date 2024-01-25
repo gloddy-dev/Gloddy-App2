@@ -12,6 +12,11 @@ const theme = {
     secondary: '#FF916F',
     danger: '#F5656A',
   },
+  signColors: {
+    signBrand: '#3387FF',
+    signTeriary: '#858899',
+    signPrimary: '#2B2D36',
+  },
 } as const;
 
 export default theme;
