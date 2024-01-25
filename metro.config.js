@@ -12,6 +12,12 @@ const {assetExts, sourceExts} = defaultConfig.resolver;
 const config = {
   transformer: {
     babelTransformerPath: require.resolve('react-native-svg-transformer'),
+    getTransformOptions: () => ({
+      transform: {
+        experimentalImportSupport: false,
+        inlineRequires: true,
+      },
+    }),
   },
   resolver: {
     assetExts: assetExts.filter(ext => ext !== 'svg'),
@@ -19,4 +25,10 @@ const config = {
   },
 };
 
+// resolver: {
+//   useWatchman: true,
+//   extraNodeModules: {'@': path.resolve(__dirname, 'src')},
+//   assetExts: [...assetExts].filter(ext => ext !== 'svg'),
+//   sourceExts: [...sourceExts, 'svg'],
+// },
 module.exports = mergeConfig(defaultConfig, config);
