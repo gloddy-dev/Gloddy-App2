@@ -10,6 +10,7 @@ import {
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import OnBoarding from './OnBoarding';
 import WebViewContainer from './WebViewContainer';
+import TabBarNavigator from './TabBarNavigator';
 
 const Stack = createStackNavigator();
 
@@ -30,6 +31,7 @@ export default function MainNavigator() {
           presentation: 'transparentModal',
         }}>
         <Stack.Screen name="OnBoarding" component={OnBoarding} />
+        <Stack.Screen name="BottomTab" component={TabBarNavigator} />
         <Stack.Screen name="WebViewContainer" component={WebViewContainer} />
       </Stack.Navigator>
     </NavigationContainer>

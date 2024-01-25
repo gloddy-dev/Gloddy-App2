@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {StackActions} from '@react-navigation/native';
-import React, {useRef, useState} from 'react';
+import {StackActions, useNavigation, useRoute} from '@react-navigation/native';
+import React, {useEffect, useRef, useState} from 'react';
 import {Alert, BackHandler, Dimensions, Linking, Platform} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import WebView from 'react-native-webview';
@@ -13,14 +13,19 @@ import {getPermission} from '@/utils/getPermission';
 import messaging from '@react-native-firebase/messaging';
 import RNRestart from 'react-native-restart'; // Import package from node modules
 import {SOURCE_URL} from '../config';
+import useWebViewNavigationSetUp from '@/hooks/useWebViewNavigationSetUp';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-export default function WebViewContainer({navigation, route}) {
+export default function WebViewContainer() {
+  useWebViewNavigationSetUp();
+  const navigation = useNavigation();
+  const params = useRoute().params;
   const webViewRef = useRef(null);
   const {isError, setIsError, onWebViewError} = useAppError();
-  const url = route.params?.url ?? SOURCE_URL;
+  const url = params?.url ?? SOURCE_URL;
+  const edges = params?.edges;
 
   useDidMount(async () => {
     /* 권한 요청 */
@@ -89,11 +94,18 @@ export default function WebViewContainer({navigation, route}) {
         break;
       }
       case 'ROUTER_EVENT': {
-        const {path, type: pathType} = data;
+        const {path, type: pathType, title} = data;
         switch (pathType) {
           case 'PUSH':
             const pushAction = StackActions.push('WebViewContainer', {
               url: `${SOURCE_URL}${path}`,
+              title: title,
+              edges: title ? ['bottom'] : [],
+              right: () => {
+                webViewRef.current?.postMessage(
+                  JSON.stringify({type: 'NAVIGATION_TAPPED_RIGHT_BUTTON'}),
+                );
+              },
             });
             navigation.dispatch(pushAction);
             break;
@@ -147,6 +159,7 @@ export default function WebViewContainer({navigation, route}) {
         overScrollMode="never"
         pullToRefreshEnabled
         thirdPartyCookiesEnabled={true}
+        sharedCookiesEnabled={true}
         androidHardwareAccelerationDisabled={true}
         onNavigationStateChange={onNavigationStateChange}
         onShouldStartLoadWithRequest={onShouldStartLoadWithRequest}

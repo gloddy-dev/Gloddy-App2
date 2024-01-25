@@ -20,6 +20,7 @@ import Text1SVG from '../../image/text1.svg';
 import Text1enSVG from '../../image/text1en.svg';
 import Text2SVG from '../../image/text2.svg';
 import Text2enSVG from '../../image/text2en.svg';
+import {useNavigation} from '@react-navigation/native';
 const deviceWidth = Dimensions.get('window').width;
 
 const imageDataList = [
@@ -28,14 +29,15 @@ const imageDataList = [
   {no: 3, uri: require('../../image/start.png')},
 ];
 
-export default function OnBoarding({navigation}) {
+export default function OnBoarding() {
+  const navigation = useNavigation();
   const scrollX = useRef(new Animated.Value(0)).current;
   const [pageIndex, setpageIndex] = useState(0);
   const [lang, setlang] = useState(null);
   const preloading = async () => {
     const get = await AsyncStorage.getItem('onBoarding');
     if (get) {
-      navigation.replace('WebViewContainer');
+      navigation.replace('BottomTab');
     }
   };
 
@@ -124,7 +126,7 @@ export default function OnBoarding({navigation}) {
                 <TouchableOpacity
                   onPress={async () => {
                     await AsyncStorage.setItem('onBoarding', 'true');
-                    navigation.replace('WebViewContainer');
+                    navigation.replace('BottomTab');
                   }}
                   style={{
                     width: deviceWidth * 0.9,
