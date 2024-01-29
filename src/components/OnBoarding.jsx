@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useEffect, useRef, useState} from 'react';
 import {
+  Alert,
   Animated,
   Dimensions,
   Image,
@@ -13,6 +14,7 @@ import * as RNLocalize from 'react-native-localize';
 import SplashScreen from 'react-native-splash-screen';
 import {SwiperFlatList} from 'react-native-swiper-flatlist';
 import {useNavigation} from '@react-navigation/native';
+import {SOURCE_URL} from '@/config';
 import Bubble1SVG from '../../image/bubble1.svg';
 import Bubble1enSVG from '../../image/bubble1en.svg';
 import Bubble2SVG from '../../image/bubble2.svg';
@@ -36,9 +38,16 @@ export default function OnBoarding() {
   const [pageIndex, setpageIndex] = useState(0);
   const [lang, setlang] = useState(null);
   const preloading = async () => {
-    const get = await AsyncStorage.getItem('onBoarding');
-    if (get) {
-      navigation.replace('BottomTab');
+    const isUserOnBoardSeen = await AsyncStorage.getItem('onBoarding');
+    const isUserLogin = await AsyncStorage.getItem('isUserLogin');
+    if (isUserOnBoardSeen) {
+      if (isUserLogin === 'true') navigation.replace('BottomTab');
+      else
+        navigation.replace('WebViewContainer', {
+          url: `${SOURCE_URL}/join?step=1`,
+        });
+    } else {
+      navigation.replace('OnBoarding');
     }
   };
 
@@ -48,7 +57,7 @@ export default function OnBoarding() {
     preloading();
     setTimeout(() => {
       SplashScreen.hide();
-    }, 3000);
+    }, 500);
   }, []);
 
   return (
@@ -127,7 +136,9 @@ export default function OnBoarding() {
                 <TouchableOpacity
                   onPress={async () => {
                     await AsyncStorage.setItem('onBoarding', 'true');
-                    navigation.replace('BottomTab');
+                    navigation.replace('WebViewContainer', {
+                      url: `${SOURCE_URL}/join?step=1`,
+                    });
                   }}
                   style={{
                     width: deviceWidth * 0.9,

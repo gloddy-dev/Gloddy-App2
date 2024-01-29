@@ -10,6 +10,7 @@ import {getPermission} from '@/utils/getPermission';
 import messaging from '@react-native-firebase/messaging';
 import RNRestart from 'react-native-restart'; // Import package from node modules
 import useWebViewNavigationSetUp from '@/hooks/useWebViewNavigationSetUp';
+import sendMessageToWebview from '@/utils/sendMessageToWebview';
 import {SOURCE_URL} from '../config';
 import Error from './Error';
 import {sendFCMTokenToWebView} from '../utils/sendFCMTokenToWebView';
@@ -88,10 +89,6 @@ export default function WebViewContainer() {
     const nativeEvent = JSON.parse(event.nativeEvent.data);
     const {type, data} = nativeEvent;
     switch (type) {
-      case 'SIGN_OUT': {
-        AsyncStorage.removeItem('token');
-        break;
-      }
       case 'ROUTER_EVENT': {
         const {path, type: pathType, title} = data;
         switch (pathType) {
@@ -135,6 +132,21 @@ export default function WebViewContainer() {
             await getPermission('photoLibrary');
             break;
           }
+        }
+        break;
+      }
+      case 'AUTH': {
+        switch (data) {
+          case 'LOG_IN':
+            await AsyncStorage.setItem('isUserLogin', 'true');
+            navigation.replace('BottomTab');
+            break;
+          case 'LOG_OUT':
+            await AsyncStorage.setItem('isUserLogin', 'false');
+            navigation.replace('WebViewContainer', {
+              url: `${SOURCE_URL}/join?step=1`,
+            });
+            break;
         }
         break;
       }
