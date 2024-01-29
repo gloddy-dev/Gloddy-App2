@@ -3,7 +3,10 @@ import WebView from 'react-native-webview';
 
 export default function sendMessageToWebview(
   webViewRef: RefObject<WebView>,
-  message: string,
+  message: {
+    type: string;
+    data: any;
+  },
 ) {
-  webViewRef.current?.postMessage(message);
+  webViewRef.current?.postMessage(JSON.stringify(message));
 }
