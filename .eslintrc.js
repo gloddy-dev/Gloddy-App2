@@ -7,6 +7,14 @@ module.exports = {
     'airbnb/hooks',
     'plugin:prettier/recommended',
   ],
+  parser: '@typescript-eslint/parser',
+  parserOptions: {
+    ecmaVersion: 2020,
+    sourceType: 'module',
+    ecmaFeatures: {
+      jsx: true,
+    },
+  },
   settings: {
     'import/resolver': {
       typescript: {},
@@ -80,5 +88,16 @@ module.exports = {
 
     'react/jsx-uses-react': 'off',
     'import/prefer-default-export': 'off',
+    'no-use-before-define': 'off',
+    'react/jsx-filename-extension': 'off',
+    'react/jsx-props-no-spreading': 'off',
+    'no-shadow': 'off',
+    'react/no-unstable-nested-components': 'warn',
+    'prefer-destructuring': 'off',
+    'no-nested-ternary': 'off',
+    'global-require': 'off',
+    'react/require-default-props': 'off',
+    'default-case': 'warn',
+    'consistent-return': 'off',
   },
 };
