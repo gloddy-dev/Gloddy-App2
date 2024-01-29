@@ -29,7 +29,7 @@ const codePushOptions = {
     optionalIgnoreButtonLabel: '아니오 (No)',
   },
   checkFrequency: CodePush.CheckFrequency.ON_APP_RESUME,
-  installMode: CodePush.InstallMode.IMMEDIATE,
+  installMode: CodePush.InstallMode.ON_NEXT_RESTART,
 };
 
 export default CodePush(codePushOptions)(App);
