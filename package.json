@@ -3,9 +3,9 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start-android:dev": "react-native run-android --variant=developmentdebug",
-    "start-android:staging": "react-native run-android --variant=stagingdebug",
-    "start-android:prod": "react-native run-android --variant=productiondebug",
+    "start-android:dev": "react-native run-android --mode=developmentdebug",
+    "start-android:staging": "react-native run-android --mode=stagingdebug",
+    "start-android:prod": "react-native run-android --mode=productiondebug",
     "build-android:production-release-bundle": "cd android && ./gradlew bundleProductionRelease && killall -9 java && open ./android/app/build/outputs/bundle/production/release",
     "build-android:production-release-apk": "cd android && ./gradlew assembleProductionRelease && killall -9 java && open ./android/app/build/outputs/apk/production/release",
     "build-android:production-debug-apk": "cd android && ./gradlew assembleProductionDebug && killall -9 java && open ./android/app/build/outputs/apk/production/debug",
