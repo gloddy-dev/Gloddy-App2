@@ -1618,7 +1618,7 @@ SPEC CHECKSUMS:
   React-Mapbuffer: 9ee041e1d7be96da6d76a251f92e72b711c651d6
   react-native-config: 86038147314e2e6d10ea9972022aa171e6b1d4d8
   react-native-flipper: 9c1957af24b76493ba74f46d000a5c1d485e7731
-  react-native-restart: 7595693413fe3ca15893702f2c8306c62a708162
+  react-native-restart: 325d6881a9996d88e3b35d0967d70842a3eaf713
   react-native-safe-area-context: 0ee144a6170530ccc37a0fd9388e28d06f516a89
   react-native-splash-screen: 4312f786b13a81b5169ef346d76d33bc0c6dc457
   react-native-webview: f95eb7d4d6a7ca45d04d861d99f628241b2aff83
@@ -1644,7 +1644,7 @@ SPEC CHECKSUMS:
   ReactCommon: 45b5d4f784e869c44a6f5a8fad5b114ca8f78c53
   RNCAsyncStorage: 618d03a5f52fbccb3d7010076bc54712844c18ef
   RNCMaskedView: 090213d32d8b3bb83a4dcb7d12c18f0152591906
-  RNCPushNotificationIOS: 64218f3c776c03d7408284a819b2abfda1834bc8
+  RNCPushNotificationIOS: 4a7aac5430e7a1e997b21f4fa4db224127606e5a
   RNFBAnalytics: 4d39fee0e5e27ef7a8e4399cde6763bf60d4bbdb
   RNFBApp: 5810d39f89d38272f29d9908cb19ef641922c081
   RNFBMessaging: 8863c0206cc1a5577678eac6c1ec2b2965bd8e52
