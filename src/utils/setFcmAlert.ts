@@ -1,9 +1,11 @@
-import { SOURCE_URL } from '@/config';
+import {SOURCE_URL} from '@/config';
 import messaging from '@react-native-firebase/messaging';
-import { StackActions } from '@react-navigation/native';
-import { Alert } from 'react-native';
-import { getNotificationPath } from './getNotificationPath';
-
+import {
+  NavigationContainerRefWithCurrent,
+  StackActions,
+} from '@react-navigation/native';
+import {Alert} from 'react-native';
+import {getNotificationPath} from './getNotificationPath';
 
 type RemoteMessageType = {
   data: {
@@ -14,35 +16,32 @@ type RemoteMessageType = {
   };
 };
 
-export const setFcmAlert = (navigationRef) => {
-  const unsubscribe = messaging().onMessage((remoteMessage) => {
-    const {
-      data,
-    } = remoteMessage;
-    const { type, title, content, redirectId } = data as RemoteMessageType['data'];
+export const setFcmAlert = (
+  navigationRef: NavigationContainerRefWithCurrent<ReactNavigation.RootParamList>,
+) => {
+  const unsubscribe = messaging().onMessage(remoteMessage => {
+    const {data} = remoteMessage;
+    const {type, title, content, redirectId} =
+      data as RemoteMessageType['data'];
 
     const path = getNotificationPath(type, Number(redirectId));
 
-    Alert.alert(
-      title,
-      content,
-      [
-        {
-          text: 'You have received a notification.',
-          onPress: () => {
-            navigationRef.dispatch(
-              StackActions.push('WebViewContainer', {
-                url: `${SOURCE_URL}${path}`,
-              })
-            )
-          }
+    Alert.alert(title, content, [
+      {
+        text: 'You have received a notification.',
+        onPress: () => {
+          navigationRef.dispatch(
+            StackActions.push('WebViewContainer', {
+              url: `${SOURCE_URL}${path}`,
+            }),
+          );
         },
-      ],
-    );
+      },
+    ]);
   });
 
   messaging().setBackgroundMessageHandler(async remoteMessage => {
     console.log('Message handled in the background!', remoteMessage);
   });
   return unsubscribe;
-}
+};

@@ -5,15 +5,14 @@ import {Alert, BackHandler, Dimensions, Linking, Platform} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import WebView from 'react-native-webview';
 
-import {sendFCMTokenToWebView} from '../utils/sendFCMTokenToWebView';
-import Error from './Error';
-
 import {useDidMount} from '@/hooks/useDidMount';
 import {getPermission} from '@/utils/getPermission';
 import messaging from '@react-native-firebase/messaging';
 import RNRestart from 'react-native-restart'; // Import package from node modules
-import {SOURCE_URL} from '../config';
 import useWebViewNavigationSetUp from '@/hooks/useWebViewNavigationSetUp';
+import {SOURCE_URL} from '../config';
+import Error from './Error';
+import {sendFCMTokenToWebView} from '../utils/sendFCMTokenToWebView';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -24,12 +23,12 @@ export default function WebViewContainer() {
   const params = useRoute().params;
   const webViewRef = useRef(null);
   const {isError, setIsError, onWebViewError} = useAppError();
-  const url = params?.url ?? SOURCE_URL;
+  const url = params.url ?? SOURCE_URL;
   const edges = params?.edges;
 
   useDidMount(async () => {
     /* 권한 요청 */
-    sendFCMTokenToWebView(webViewRef);
+    await sendFCMTokenToWebView(webViewRef);
     await messaging().requestPermission();
   }, []);
 
@@ -96,39 +95,48 @@ export default function WebViewContainer() {
       case 'ROUTER_EVENT': {
         const {path, type: pathType, title} = data;
         switch (pathType) {
-          case 'PUSH':
+          case 'PUSH': {
             const pushAction = StackActions.push('WebViewContainer', {
               url: `${SOURCE_URL}${path}`,
-              title: title,
+              title,
               edges: title ? ['bottom'] : [],
-              right: () => {
-                webViewRef.current?.postMessage(
-                  JSON.stringify({type: 'NAVIGATION_TAPPED_RIGHT_BUTTON'}),
-                );
-              },
+              // right: () => { // 어디서 쓰는지 잘 모르겠는데 WARNING 떠서 주석처리
+              //   webViewRef.current?.postMessage(
+              //     JSON.stringify({type: 'NAVIGATION_TAPPED_RIGHT_BUTTON'}),
+              //   );
+              // },
             });
             navigation.dispatch(pushAction);
             break;
-          case 'BACK':
+          }
+          case 'BACK': {
             const popAction = StackActions.pop(1);
             navigation.dispatch(popAction);
             break;
-          case 'REPLACE':
+          }
+          case 'REPLACE': {
             const replaceAction = StackActions.replace('WebViewContainer', {
               url: `${SOURCE_URL}${path}`,
             });
             navigation.dispatch(replaceAction);
             break;
-          case 'RESET':
+          }
+          case 'RESET': {
             RNRestart.Restart();
+            break;
+          }
         }
+        break;
       }
       case 'GET_PERMISSION': {
         switch (data) {
-          case 'IMAGE':
+          case 'IMAGE': {
             await getPermission('camera');
             await getPermission('photoLibrary');
+            break;
+          }
         }
+        break;
       }
     }
   };
@@ -158,16 +166,16 @@ export default function WebViewContainer() {
         source={{uri: url}}
         overScrollMode="never"
         pullToRefreshEnabled
-        thirdPartyCookiesEnabled={true}
-        sharedCookiesEnabled={true}
-        androidHardwareAccelerationDisabled={true}
+        thirdPartyCookiesEnabled
+        sharedCookiesEnabled
+        androidHardwareAccelerationDisabled
         onNavigationStateChange={onNavigationStateChange}
         onShouldStartLoadWithRequest={onShouldStartLoadWithRequest}
         onMessage={requestOnMessage} // 웹뷰 -> 앱으로 통신
         onContentProcessDidTerminate={() => webViewRef.current?.reload()}
         bounces={false}
         onError={onWebViewError}
-        webviewDebuggingEnabled={true}
+        webviewDebuggingEnabled
       />
     </SafeAreaView>
   );

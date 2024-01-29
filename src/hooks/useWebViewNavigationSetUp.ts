@@ -1,10 +1,15 @@
 import Header from '@/components/Header';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {useLayoutEffect} from 'react';
+
+type WebViewRouteParams = {
+  title?: string;
+};
 
 export default function useWebViewNavigationSetUp() {
   const navigation = useNavigation();
-  const params = useRoute().params;
+  const params =
+    useRoute<RouteProp<Record<string, WebViewRouteParams>, string>>().params;
 
   useLayoutEffect(() => {
     if (!params.title) return;

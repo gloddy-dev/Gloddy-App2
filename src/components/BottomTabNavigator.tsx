@@ -1,15 +1,14 @@
 import {
   BottomTabBarProps,
-  BottomTabNavigationOptions,
   createBottomTabNavigator,
 } from '@react-navigation/bottom-tabs';
-import WebViewContainer from './WebViewContainer';
 import {PropsWithChildren, useMemo} from 'react';
+import WebViewContainer from './WebViewContainer';
 import TabBar from './TabBar';
 
 const BottomTab = createBottomTabNavigator();
 
-const BottomTabNavigator = ({children}: PropsWithChildren) => {
+function BottomTabNavigator({children}: PropsWithChildren) {
   const props = useMemo(
     () => ({
       tabBar: (props: BottomTabBarProps) => <TabBar {...props} />,
@@ -21,7 +20,7 @@ const BottomTabNavigator = ({children}: PropsWithChildren) => {
     [],
   );
   return <BottomTab.Navigator {...props}>{children}</BottomTab.Navigator>;
-};
+}
 
 BottomTabNavigator.createScreen = ({
   name,
@@ -34,6 +33,7 @@ BottomTabNavigator.createScreen = ({
     name={name}
     component={WebViewContainer}
     initialParams={{url, edges: ['top']}}
+    key={`bottom-tab-nav-${name}`}
   />
 );
 

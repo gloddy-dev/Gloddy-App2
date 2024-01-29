@@ -1,6 +1,6 @@
 import {Pressable, StyleSheet, Text, View} from 'react-native';
-import Icon, {IconName} from './Icon';
 import theme from '@/styles/theme';
+import Icon, {IconName} from './Icon';
 
 export interface TabBarIconProps {
   icon?: IconName;
@@ -9,7 +9,7 @@ export interface TabBarIconProps {
   onPress?(): void;
 }
 
-const TabBarIcon = ({icon, text, focused, onPress}: TabBarIconProps) => {
+function TabBarIcon({icon, text, focused, onPress}: TabBarIconProps) {
   const color = focused
     ? theme.signColors.signBrand
     : theme.signColors.signTeriary;
@@ -23,7 +23,7 @@ const TabBarIcon = ({icon, text, focused, onPress}: TabBarIconProps) => {
       )}
     </Pressable>
   );
-};
+}
 
 const styles = StyleSheet.create({
   wrapper: {

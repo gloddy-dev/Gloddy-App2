@@ -2,10 +2,10 @@ import {BottomTabBarProps} from '@react-navigation/bottom-tabs';
 import {useCallback} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {StyleSheet, View} from 'react-native';
+import {Shadow} from 'react-native-shadow-2';
 import theme from '@/styles/theme';
 import useTabBarPress from '@/hooks/useTabBarPress';
 import TabBarIcon from './TabBarIcon';
-import {Shadow} from 'react-native-shadow-2';
 
 const ScreenIconName = {
   Matching: 'Matching',
@@ -23,7 +23,7 @@ const getScreenIcon = (value: string) =>
     ? ScreenIconName[value as ScreenIconNameKey]
     : undefined;
 
-const TabBar = ({state, navigation, descriptors}: BottomTabBarProps) => {
+function TabBar({state, navigation, descriptors}: BottomTabBarProps) {
   const onPress = useTabBarPress();
   const renderTabBarButton = useCallback(
     (name: string, index: number) => (
@@ -54,7 +54,7 @@ const TabBar = ({state, navigation, descriptors}: BottomTabBarProps) => {
       </View>
     </Shadow>
   );
-};
+}
 
 const styles = StyleSheet.create({
   block: {width: '100%'},

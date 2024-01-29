@@ -1,10 +1,12 @@
-import theme from '@/styles/theme';
 import {StackHeaderProps} from '@react-navigation/stack';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
-import Icon from './Icon';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
-const Header = ({navigation, route}: StackHeaderProps) => {
+import Icon from './Icon';
+
+import theme from '@/styles/theme';
+
+function Header({navigation, route}: StackHeaderProps) {
   const {top: topInset} = useSafeAreaInsets();
   const {title, right} = route.params;
 
@@ -25,7 +27,7 @@ const Header = ({navigation, route}: StackHeaderProps) => {
       </View>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   wrapper: {

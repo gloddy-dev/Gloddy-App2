@@ -12,6 +12,7 @@ import {ExpandingDot} from 'react-native-animated-pagination-dots';
 import * as RNLocalize from 'react-native-localize';
 import SplashScreen from 'react-native-splash-screen';
 import {SwiperFlatList} from 'react-native-swiper-flatlist';
+import {useNavigation} from '@react-navigation/native';
 import Bubble1SVG from '../../image/bubble1.svg';
 import Bubble1enSVG from '../../image/bubble1en.svg';
 import Bubble2SVG from '../../image/bubble2.svg';
@@ -20,7 +21,7 @@ import Text1SVG from '../../image/text1.svg';
 import Text1enSVG from '../../image/text1en.svg';
 import Text2SVG from '../../image/text2.svg';
 import Text2enSVG from '../../image/text2en.svg';
-import {useNavigation} from '@react-navigation/native';
+
 const deviceWidth = Dimensions.get('window').width;
 
 const imageDataList = [
@@ -63,10 +64,10 @@ export default function OnBoarding() {
         paginationDefaultColor="gray"
         paginationActiveColor="rgb(75,133,247)"
         showPagination={false}
-        pagingEnabled={true}
+        pagingEnabled
         paginationStyle={{bottom: 100}}
         onChangeIndex={e => setpageIndex(e.index)}
-        horizontal={true}
+        horizontal
         onScroll={Animated.event(
           [{nativeEvent: {contentOffset: {x: scrollX}}}],
           {
